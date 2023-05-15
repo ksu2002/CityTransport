@@ -40,7 +40,7 @@ namespace CityTransportWork
         {
 
         }
-
+        private int user_ID;
         private void authButton_Click(object sender, EventArgs e)
         {
             sqlConnectionStringBuilder.UserID = "guest";
@@ -57,6 +57,7 @@ namespace CityTransportWork
                 {
                     sqlConnectionStringBuilder.UserID = auth.GetValue(0).ToString();
                     sqlConnectionStringBuilder.Password = auth.GetValue(1).ToString();
+                    user_ID = Int32.Parse(auth.GetValue(2).ToString());
                     statusAuth.Text = "Подключение успешно";
                 }
                 else
@@ -76,6 +77,7 @@ namespace CityTransportWork
             if(sqlConnectionStringBuilder.UserID == "driver")
             {
                 DriverForm driverForm = new DriverForm();
+                driverForm.user_ID= user_ID;
                 driverForm.Show();
               //  this.Close();
             }
