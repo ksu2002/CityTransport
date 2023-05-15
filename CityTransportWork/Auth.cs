@@ -75,7 +75,9 @@ namespace CityTransportWork
             }
             if(sqlConnectionStringBuilder.UserID == "driver")
             {
-                statusAuth.Text = "водитель";
+                DriverForm driverForm = new DriverForm();
+                driverForm.Show();
+              //  this.Close();
             }
             if (sqlConnectionStringBuilder.UserID == "passenger")
             {
