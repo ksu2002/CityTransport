@@ -29,5 +29,12 @@ namespace CityTransportWork
             driverSchedule.user_ID = user_ID;
             driverSchedule.Show();
         }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            MonthlyReport monthlyReport = new MonthlyReport();
+            monthlyReport.user_ID = user_ID;
+            monthlyReport.Show();
+        }
     }
 }

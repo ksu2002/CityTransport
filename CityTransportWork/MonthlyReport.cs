@@ -11,9 +11,8 @@ using System.Windows.Forms;
 
 namespace CityTransportWork
 {
-    public partial class DriverSchedule : Form
+    public partial class MonthlyReport : Form
     {
-
         private SqlConnectionStringBuilder sqlConnectionStringBuilder = new SqlConnectionStringBuilder()
         {
             DataSource = "DESKTOP-H2QPSJ9\\SQLEXPRESS",
@@ -21,62 +20,62 @@ namespace CityTransportWork
             PersistSecurityInfo = false,
             TrustServerCertificate = true,
         };
-       
-        public DriverSchedule()
+        public MonthlyReport()
         {
             InitializeComponent();
-        } 
+        }
+
+        private void MonthlyReport_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void time_Click(object sender, EventArgs e)
+        {
+
+        }
         public int user_ID;
-
-        private void DriverSchedule_Load(object sender, EventArgs e)
+        private void monthCalendar1_DateChanged(object sender, DateRangeEventArgs e)
         {
-           
-        }
-
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
-        private string date = DateTime.Now.ToString();
-        private void dateTimePicker_ValueChanged(object sender, EventArgs e)
-        { 
-            date = dateTimePicker.Value.ToString();
+            DateTime date = e.Start;
             sqlConnectionStringBuilder.UserID = "guest";
             sqlConnectionStringBuilder.Password = "123";
-  
+
             SqlConnection sqlConnection = new SqlConnection(sqlConnectionStringBuilder.ConnectionString);
-        
+            
             try
             {
-                string query = ($"SELECT*FROM dbo.TripsForDriverPerDay({user_ID}, '{date}')");
+                string query = ($"SELECT*FROM dbo.MonthlyReport({user_ID}, {Int32.Parse(date.Year.ToString())},{Int32.Parse(date.Month.ToString())})");
                 SqlCommand command = new SqlCommand(query, sqlConnection);
                 SqlDataAdapter dataAdapter = new SqlDataAdapter();
                 dataAdapter.SelectCommand = command;
 
-                // Создание объекта DataSet
                 DataSet dataSet = new DataSet();
-
-                // Открытие соединения с базой данных
                 sqlConnection.Open();
-
-                // Заполнение DataSet
                 dataAdapter.Fill(dataSet);
-
-                // Закрытие соединения с базой данных
                 sqlConnection.Close();
+                FIO.Text =  dataSet.Tables[0].Rows[0].ItemArray[0].ToString();
+                trips.Text = dataSet.Tables[0].Rows[0].ItemArray[1].ToString();
+                time.Text = dataSet.Tables[0].Rows[0].ItemArray[2].ToString();  
+                money.Text = dataSet.Tables[0].Rows[0].ItemArray[3].ToString();
 
-                // Привязка DataSet к DataGridView
-                dataGridView1.DataSource = dataSet.Tables[0];
-
-               
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
                 return;
             }
-
+            
         }
-        
     }
 }
