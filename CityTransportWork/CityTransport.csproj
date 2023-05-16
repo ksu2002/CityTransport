@@ -67,11 +67,11 @@
     <Compile Include="Auth.Designer.cs">
       <DependentUpon>Auth.cs</DependentUpon>
     </Compile>
-    <Compile Include="Form1.cs">
+    <Compile Include="PassengerForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="PassengerForm.Designer.cs">
+      <DependentUpon>PassengerForm.cs</DependentUpon>
     </Compile>
     <Compile Include="DriverForm.cs">
       <SubType>Form</SubType>
@@ -104,6 +104,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MonthlyReport.resx">
       <DependentUpon>MonthlyReport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PassengerForm.resx">
+      <DependentUpon>PassengerForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

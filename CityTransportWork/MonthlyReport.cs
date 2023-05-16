@@ -48,8 +48,8 @@ namespace CityTransportWork
         private void monthCalendar1_DateChanged(object sender, DateRangeEventArgs e)
         {
             DateTime date = e.Start;
-            sqlConnectionStringBuilder.UserID = "guest";
-            sqlConnectionStringBuilder.Password = "123";
+            sqlConnectionStringBuilder.UserID = "driver";
+            sqlConnectionStringBuilder.Password = "driver";
 
             SqlConnection sqlConnection = new SqlConnection(sqlConnectionStringBuilder.ConnectionString);
             

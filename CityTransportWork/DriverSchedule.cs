@@ -41,9 +41,9 @@ namespace CityTransportWork
         private void dateTimePicker_ValueChanged(object sender, EventArgs e)
         { 
             date = dateTimePicker.Value.ToString();
-            sqlConnectionStringBuilder.UserID = "guest";
-            sqlConnectionStringBuilder.Password = "123";
-  
+            sqlConnectionStringBuilder.UserID = "driver";
+            sqlConnectionStringBuilder.Password = "driver";
+
             SqlConnection sqlConnection = new SqlConnection(sqlConnectionStringBuilder.ConnectionString);
         
             try

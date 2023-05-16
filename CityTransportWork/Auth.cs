@@ -83,7 +83,8 @@ namespace CityTransportWork
             }
             if (sqlConnectionStringBuilder.UserID == "passenger")
             {
-                statusAuth.Text = "passenger";
+                PassengerForm passengerForm = new PassengerForm();
+                passengerForm.Show();
             }
             if (sqlConnectionStringBuilder.UserID == "scheduler")
             {
