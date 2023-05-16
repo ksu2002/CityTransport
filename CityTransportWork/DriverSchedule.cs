@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
@@ -13,15 +14,6 @@ namespace CityTransportWork
 {
     public partial class DriverSchedule : Form
     {
-
-        private SqlConnectionStringBuilder sqlConnectionStringBuilder = new SqlConnectionStringBuilder()
-        {
-            DataSource = "DESKTOP-H2QPSJ9\\SQLEXPRESS",
-            InitialCatalog = "CityTransport",
-            PersistSecurityInfo = false,
-            TrustServerCertificate = true,
-        };
-       
         public DriverSchedule()
         {
             InitializeComponent();
@@ -41,10 +33,8 @@ namespace CityTransportWork
         private void dateTimePicker_ValueChanged(object sender, EventArgs e)
         { 
             date = dateTimePicker.Value.ToString();
-            sqlConnectionStringBuilder.UserID = "driver";
-            sqlConnectionStringBuilder.Password = "driver";
-
-            SqlConnection sqlConnection = new SqlConnection(sqlConnectionStringBuilder.ConnectionString);
+            string connectionString = ConfigurationManager.ConnectionStrings["bdConnectionString"].ConnectionString;
+            SqlConnection sqlConnection = new SqlConnection(connectionString);
         
             try
             {

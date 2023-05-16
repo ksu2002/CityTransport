@@ -84,7 +84,7 @@ namespace CityTransportWork
             // statusAuth
             // 
             this.statusAuth.AutoSize = true;
-            this.statusAuth.Location = new System.Drawing.Point(296, 280);
+            this.statusAuth.Location = new System.Drawing.Point(293, 280);
             this.statusAuth.Name = "statusAuth";
             this.statusAuth.Size = new System.Drawing.Size(0, 16);
             this.statusAuth.TabIndex = 5;

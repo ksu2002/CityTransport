@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
@@ -13,13 +14,6 @@ namespace CityTransportWork
 {
     public partial class MonthlyReport : Form
     {
-        private SqlConnectionStringBuilder sqlConnectionStringBuilder = new SqlConnectionStringBuilder()
-        {
-            DataSource = "DESKTOP-H2QPSJ9\\SQLEXPRESS",
-            InitialCatalog = "CityTransport",
-            PersistSecurityInfo = false,
-            TrustServerCertificate = true,
-        };
         public MonthlyReport()
         {
             InitializeComponent();
@@ -48,11 +42,8 @@ namespace CityTransportWork
         private void monthCalendar1_DateChanged(object sender, DateRangeEventArgs e)
         {
             DateTime date = e.Start;
-            sqlConnectionStringBuilder.UserID = "driver";
-            sqlConnectionStringBuilder.Password = "driver";
-
-            SqlConnection sqlConnection = new SqlConnection(sqlConnectionStringBuilder.ConnectionString);
-            
+            string connectionString = ConfigurationManager.ConnectionStrings["bdConnectionString"].ConnectionString;
+            SqlConnection sqlConnection = new SqlConnection(connectionString);
             try
             {
                 string query = ($"SELECT*FROM dbo.MonthlyReport({user_ID}, {Int32.Parse(date.Year.ToString())},{Int32.Parse(date.Month.ToString())})");

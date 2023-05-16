@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
@@ -13,30 +14,21 @@ namespace CityTransportWork
 {
     public partial class PassengerForm : Form
     {
-
-        private SqlConnectionStringBuilder sqlConnectionStringBuilder = new SqlConnectionStringBuilder()
-        {
-            DataSource = "DESKTOP-H2QPSJ9\\SQLEXPRESS",
-            InitialCatalog = "CityTransport",
-            PersistSecurityInfo = false,
-            TrustServerCertificate = true,
-        };
         public PassengerForm()
         {
             InitializeComponent();
         }
         private void ShowRoutes()
         {
-            sqlConnectionStringBuilder.UserID = "passenger";
-            sqlConnectionStringBuilder.Password = "passenger";
+            string connectionString = ConfigurationManager.ConnectionStrings["bdConnectionString"].ConnectionString;
+            SqlConnection sqlConnection = new SqlConnection(connectionString);
             try
             {
-                SqlConnection sqlConnection = new SqlConnection(sqlConnectionStringBuilder.ConnectionString);
                 string stop1name = stop1.SelectedItem.ToString();
                 string stop2name = stop2.SelectedItem.ToString();
 
                 string query1 = ($"SELECT*FROM dbo.RoutsFromStop1ToStop2({"'" + stop1name + "'"}, {"'" + stop2name + "'"})");
-                label1.Text = stop1name;
+                label1.Text = connectionString;
                 label2.Text = stop2name;
                 SqlCommand command1 = new SqlCommand(query1, sqlConnection);
                 SqlDataAdapter dataAdapter1 = new SqlDataAdapter();
@@ -71,10 +63,9 @@ namespace CityTransportWork
         }
         private void PassengerForm_Load(object sender, EventArgs e)
         {
-            sqlConnectionStringBuilder.UserID = "passenger";
-            sqlConnectionStringBuilder.Password = "passenger";
-
-            SqlConnection sqlConnection = new SqlConnection(sqlConnectionStringBuilder.ConnectionString);
+            string connectionString = ConfigurationManager.ConnectionStrings["bdConnectionString"].ConnectionString;
+            label1.Text = connectionString;
+            SqlConnection sqlConnection = new SqlConnection(connectionString);
             sqlConnection.Open();
 
             try
