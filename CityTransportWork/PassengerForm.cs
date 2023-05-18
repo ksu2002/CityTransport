@@ -28,8 +28,6 @@ namespace CityTransportWork
                 string stop2name = stop2.SelectedItem.ToString();
 
                 string query1 = ($"SELECT*FROM dbo.RoutsFromStop1ToStop2({"'" + stop1name + "'"}, {"'" + stop2name + "'"})");
-                label1.Text = connectionString;
-                label2.Text = stop2name;
                 SqlCommand command1 = new SqlCommand(query1, sqlConnection);
                 SqlDataAdapter dataAdapter1 = new SqlDataAdapter();
                 dataAdapter1.SelectCommand = command1;
@@ -43,8 +41,6 @@ namespace CityTransportWork
                 else
                 {
                     string query2 = ($"SELECT*FROM dbo.TransferFromStop1ToStop2({"'" + stop1name + "'"}, {"'" + stop2name + "'"})");
-                    label1.Text = stop1name;
-                    label2.Text = stop2name;
                     SqlCommand command2 = new SqlCommand(query2, sqlConnection);
                     SqlDataAdapter dataAdapter2 = new SqlDataAdapter();
                     dataAdapter2.SelectCommand = command2;
@@ -64,7 +60,6 @@ namespace CityTransportWork
         private void PassengerForm_Load(object sender, EventArgs e)
         {
             string connectionString = ConfigurationManager.ConnectionStrings["bdConnectionString"].ConnectionString;
-            label1.Text = connectionString;
             SqlConnection sqlConnection = new SqlConnection(connectionString);
             sqlConnection.Open();
 

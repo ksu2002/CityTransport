@@ -99,7 +99,8 @@ namespace CityTransportWork
             }
             if (role_name == "scheduler")
             {
-                statusAuth.Text = "scheduler";
+                SchedulerForm schedulerForm = new SchedulerForm();
+                schedulerForm.Show();
             }
             
         }
@@ -110,6 +111,11 @@ namespace CityTransportWork
         }
 
         private void statusAuth_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
         {
 
         }
