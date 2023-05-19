@@ -29,7 +29,6 @@ namespace CityTransportWork
         private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
         {
             dtime = dateTimePicker1.Value;
-            // dateTimePicker1.Enabled = false; // запрещаем изменение
         }
         string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["bdConnectionString"].ConnectionString;
 
@@ -85,7 +84,7 @@ namespace CityTransportWork
             }
 
         }
-        private int number;
+        private int number = -1;
         private string transportTypeName;
         private string driverName;
         private string carName;
@@ -98,6 +97,10 @@ namespace CityTransportWork
 
             try
             {
+                transportType.SelectedItem = null;
+                dir.SelectedItem = null;
+                transportType.Items.Clear();
+                dir.Items.Clear();
                 number = Int32.Parse(routeNumber.SelectedItem.ToString());
 
                 SqlCommand command = new SqlCommand("dbo.[getTransportTypeName]", sqlConnection);
@@ -128,32 +131,35 @@ namespace CityTransportWork
         {
             SqlConnection sqlConnection = new SqlConnection(connectionString);
             sqlConnection.Open();
-
-            try
+            if (transportType.SelectedIndex != -1)
             {
-                transportTypeName =transportType.SelectedItem.ToString();
-
-                SqlCommand command = new SqlCommand("dbo.[getDir]", sqlConnection);
-                command.CommandType = CommandType.StoredProcedure;
-
-                // Добавляем параметр @number
-                command.Parameters.AddWithValue("@number", number);
-
-                // Добавляем параметр @type
-                command.Parameters.AddWithValue("@type", transportTypeName);
-
-                SqlDataReader reader = command.ExecuteReader();
-
-                while (reader.Read())
+                try
                 {
-                    dir.Items.Add(reader["RouteName"].ToString());
+                    // (stop1.SelectedIndex != -1
+                    transportTypeName = transportType.SelectedIndex != -1 ? transportType.SelectedItem.ToString() : null;
+
+                    SqlCommand command = new SqlCommand("dbo.[getDir]", sqlConnection);
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    // Добавляем параметр @number
+                    command.Parameters.AddWithValue("@number", number);
+
+                    // Добавляем параметр @type
+                    command.Parameters.AddWithValue("@type", transportTypeName);
+
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        dir.Items.Add(reader["RouteName"].ToString());
+                    }
+                    sqlConnection.Close();
                 }
-                sqlConnection.Close();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-                return;
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                    return;
+                }
             }
         }
 
@@ -169,20 +175,29 @@ namespace CityTransportWork
 
         private void button1_Click(object sender, EventArgs e)
         {
-            this.Close();
-            TripsSchedule tripsSchedule = new TripsSchedule();  
-            tripsSchedule.number = number;  
-            tripsSchedule.transportTypeName = transportTypeName;    
-            tripsSchedule.dtime = dtime;
-            tripsSchedule.driverName = driverName;
-            tripsSchedule.carName = carName;    
-            tripsSchedule.direction = direction;
-            tripsSchedule.Show();
-    }
+            if (number != -1 && transportTypeName != null && driverName != null && carName != null && direction != null)
+            {
+                this.Close();
+                TripsSchedule tripsSchedule = new TripsSchedule();
+                tripsSchedule.number = number;
+                tripsSchedule.transportTypeName = transportTypeName;
+                tripsSchedule.dtime = dtime;
+                tripsSchedule.driverName = driverName;
+                tripsSchedule.carName = carName;
+                tripsSchedule.direction = direction;
+                tripsSchedule.Show();
+            }
+            else
+            {
+                MessageBox.Show("Заполните все поля");
+            }
+        }
 
         private void dir_SelectedIndexChanged(object sender, EventArgs e)
         {
-            direction = dir.SelectedItem.ToString();
+
+            direction = dir.SelectedIndex != -1 ? transportType.SelectedItem.ToString() : null;
+         //   direction = dir.SelectedItem.ToString();
         }
     }
 }

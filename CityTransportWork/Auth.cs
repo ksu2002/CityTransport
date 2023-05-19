@@ -34,8 +34,8 @@ namespace CityTransportWork
 
         }
         private int user_ID;
-        private string role_name;
-        private string role_password;
+        private string role_name = "guest";
+        private string role_password = "guest";
 
         private void authButton_Click(object sender, EventArgs e)
         {
