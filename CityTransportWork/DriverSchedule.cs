@@ -22,7 +22,38 @@ namespace CityTransportWork
 
         private void DriverSchedule_Load(object sender, EventArgs e)
         {
-           
+            string connectionString = ConfigurationManager.ConnectionStrings["bdConnectionString"].ConnectionString;
+            SqlConnection sqlConnection = new SqlConnection(connectionString);
+
+            try
+            {
+                string query = ($"SELECT*FROM dbo.TripsForDriverPerDay({user_ID}, '{date}')");
+                SqlCommand command = new SqlCommand(query, sqlConnection);
+                SqlDataAdapter dataAdapter = new SqlDataAdapter();
+                dataAdapter.SelectCommand = command;
+
+                // Создание объекта DataSet
+                DataSet dataSet = new DataSet();
+
+                // Открытие соединения с базой данных
+                sqlConnection.Open();
+
+                // Заполнение DataSet
+                dataAdapter.Fill(dataSet);
+
+                // Закрытие соединения с базой данных
+                sqlConnection.Close();
+
+                // Привязка DataSet к DataGridView
+                dataGridView1.DataSource = dataSet.Tables[0];
+
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return;
+            }
         }
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)

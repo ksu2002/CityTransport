@@ -21,7 +21,31 @@ namespace CityTransportWork
 
         private void MonthlyReport_Load(object sender, EventArgs e)
         {
+            DateTime date = DateTime.Now;
+            string connectionString = ConfigurationManager.ConnectionStrings["bdConnectionString"].ConnectionString;
+            SqlConnection sqlConnection = new SqlConnection(connectionString);
+            try
+            {
+                string query = ($"SELECT*FROM dbo.MonthlyReport({user_ID}, {Int32.Parse(date.Year.ToString())},{Int32.Parse(date.Month.ToString())})");
+                SqlCommand command = new SqlCommand(query, sqlConnection);
+                SqlDataAdapter dataAdapter = new SqlDataAdapter();
+                dataAdapter.SelectCommand = command;
 
+                DataSet dataSet = new DataSet();
+                sqlConnection.Open();
+                dataAdapter.Fill(dataSet);
+                sqlConnection.Close();
+                FIO.Text = dataSet.Tables[0].Rows[0].ItemArray[0].ToString();
+                trips.Text = dataSet.Tables[0].Rows[0].ItemArray[1].ToString();
+                time.Text = dataSet.Tables[0].Rows[0].ItemArray[2].ToString();
+                money.Text = dataSet.Tables[0].Rows[0].ItemArray[3].ToString();
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return;
+            }
         }
 
         private void label1_Click(object sender, EventArgs e)

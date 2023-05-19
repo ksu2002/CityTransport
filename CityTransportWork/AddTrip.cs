@@ -63,17 +63,6 @@ namespace CityTransportWork
                 }
                 reader2.Close();
 
-                SqlCommand command3 = new SqlCommand("dbo.[getCar]", sqlConnection);
-                command3.CommandType = CommandType.StoredProcedure;
-
-                SqlDataReader reader3 = command3.ExecuteReader();
-
-                while (reader3.Read())
-                {
-                    car.Items.Add(reader3["TransportNumber"].ToString());
-                }
-                reader3.Close();
-
 
                 sqlConnection.Close();
             }
@@ -130,11 +119,13 @@ namespace CityTransportWork
         private void transportType_SelectedIndexChanged(object sender, EventArgs e)
         {
             SqlConnection sqlConnection = new SqlConnection(connectionString);
-            sqlConnection.Open();
+            car.SelectedItem = null;
+            car.Items.Clear();
             if (transportType.SelectedIndex != -1)
             {
                 try
                 {
+                    sqlConnection.Open();
                     // (stop1.SelectedIndex != -1
                     transportTypeName = transportType.SelectedIndex != -1 ? transportType.SelectedItem.ToString() : null;
 
@@ -160,6 +151,28 @@ namespace CityTransportWork
                     MessageBox.Show(ex.Message);
                     return;
                 }
+                try
+                {
+                    sqlConnection.Open();
+                    SqlCommand command3 = new SqlCommand("dbo.[getCar]", sqlConnection);
+                command3.CommandType = CommandType.StoredProcedure;
+                command3.Parameters.AddWithValue("@type", transportTypeName);
+
+                SqlDataReader reader3 = command3.ExecuteReader();
+
+                while (reader3.Read())
+                {
+                    car.Items.Add(reader3["TransportNumber"].ToString());
+                }
+                reader3.Close();
+                    sqlConnection.Close();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                    return;
+                }
+
             }
         }
 
@@ -170,7 +183,7 @@ namespace CityTransportWork
 
         private void car_SelectedIndexChanged(object sender, EventArgs e)
         {
-            carName= car.SelectedItem.ToString();
+            carName= car.SelectedIndex != -1 ? car.SelectedItem.ToString() : null;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -196,7 +209,7 @@ namespace CityTransportWork
         private void dir_SelectedIndexChanged(object sender, EventArgs e)
         {
 
-            direction = dir.SelectedIndex != -1 ? transportType.SelectedItem.ToString() : null;
+            direction = dir.SelectedIndex != -1 ? dir.SelectedItem.ToString() : null;
          //   direction = dir.SelectedItem.ToString();
         }
     }
