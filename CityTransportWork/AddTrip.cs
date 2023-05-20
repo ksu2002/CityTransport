@@ -28,6 +28,8 @@ namespace CityTransportWork
 
         private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
         {
+            car.SelectedItem = null;
+            car.Items.Clear();
             driver.SelectedItem = null;
             driver.Items.Clear();
             dtime = dateTimePicker1.Value;
@@ -52,6 +54,29 @@ namespace CityTransportWork
                     }
                     reader1.Close();
 
+                    sqlConnection.Close();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                    return;
+                }
+
+                try
+                {
+                    sqlConnection.Open();
+                    SqlCommand command3 = new SqlCommand("dbo.[getCar]", sqlConnection);
+                    command3.CommandType = CommandType.StoredProcedure;
+                    command3.Parameters.AddWithValue("@type", transportTypeName);
+                    command3.Parameters.AddWithValue("@date", dtime.Date);
+
+                    SqlDataReader reader3 = command3.ExecuteReader();
+
+                    while (reader3.Read())
+                    {
+                        car.Items.Add(reader3["TransportNumber"].ToString());
+                    }
+                    reader3.Close();
                     sqlConnection.Close();
                 }
                 catch (Exception ex)
@@ -174,27 +199,7 @@ namespace CityTransportWork
                     MessageBox.Show(ex.Message);
                     return;
                 }
-                try
-                {
-                    sqlConnection.Open();
-                    SqlCommand command3 = new SqlCommand("dbo.[getCar]", sqlConnection);
-                command3.CommandType = CommandType.StoredProcedure;
-                command3.Parameters.AddWithValue("@type", transportTypeName);
-
-                SqlDataReader reader3 = command3.ExecuteReader();
-
-                while (reader3.Read())
-                {
-                    car.Items.Add(reader3["TransportNumber"].ToString());
-                }
-                reader3.Close();
-                    sqlConnection.Close();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                    return;
-                }
+               
 
             }
         }

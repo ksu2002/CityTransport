@@ -24,6 +24,7 @@ namespace CityTransportWork
         public string carName = null;
         public string direction = null;
         public DateTime dtime = DateTime.Now;
+        public DateTime date = DateTime.Now;
         private void button1_Click(object sender, EventArgs e)
         {
             InsertForm insertForm = new InsertForm();
@@ -32,6 +33,7 @@ namespace CityTransportWork
 
         private void SchedulerForm_Load(object sender, EventArgs e)
         {
+            showCondition();
             if (number != -1 && transportTypeName != null && driverName != null && carName != null && direction != null)
             {
 
@@ -168,6 +170,39 @@ namespace CityTransportWork
             }
         }
 
+        private void showCondition()
+        {
+            try
+            {
+                string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["bdConnectionString"].ConnectionString;
+
+                SqlConnection sqlConnection = new SqlConnection(connectionString);
+                sqlConnection.Open();
+                dtime = DateTime.Now;
+                string query = ($"select* from [dbo].[HistoryCondition]('{date.Date}')");
+                SqlCommand command = new SqlCommand(query, sqlConnection);
+                SqlDataAdapter dataAdapter = new SqlDataAdapter();
+                dataAdapter.SelectCommand = command;
+
+                // Создание объекта DataSet
+                DataSet dataSet = new DataSet();
+
+                // Заполнение DataSet
+                dataAdapter.Fill(dataSet);
+
+
+                // Привязка DataSet к DataGridView
+                dataGridView2.DataSource = dataSet.Tables[0];
+
+                sqlConnection.Close();
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return;
+            }
+        }
         private void button4_Click(object sender, EventArgs e)
         {
             AddTrip addTrip = new AddTrip();
@@ -188,6 +223,17 @@ namespace CityTransportWork
         }
 
         private void dataGridView1_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
+        {
+
+        }
+
+        private void dateTimePicker2_ValueChanged(object sender, EventArgs e)
+        {
+            date = dateTimePicker2.Value.Date;
+            showCondition();
+        }
+
+        private void dataGridView2_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 
         }
