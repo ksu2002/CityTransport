@@ -28,15 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
             this.schedule = new System.Windows.Forms.TabControl();
             this.schedulePage = new System.Windows.Forms.TabPage();
-            this.reportPage = new System.Windows.Forms.TabPage();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.dateTimePicker = new System.Windows.Forms.DateTimePicker();
             this.label1 = new System.Windows.Forms.Label();
-            this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
+            this.dateTimePicker = new System.Windows.Forms.DateTimePicker();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.reportPage = new System.Windows.Forms.TabPage();
             this.money = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.time = new System.Windows.Forms.Label();
@@ -44,31 +41,12 @@
             this.trips = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.FIO = new System.Windows.Forms.Label();
+            this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
             this.schedule.SuspendLayout();
             this.schedulePage.SuspendLayout();
-            this.reportPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.reportPage.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(407, 398);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(300, 23);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "Расписания маршрутов на день ";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(141, 442);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(137, 23);
-            this.button2.TabIndex = 1;
-            this.button2.Text = "Отчет за месяц";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // schedule
             // 
@@ -78,7 +56,7 @@
             this.schedule.Location = new System.Drawing.Point(0, 0);
             this.schedule.Name = "schedule";
             this.schedule.SelectedIndex = 0;
-            this.schedule.Size = new System.Drawing.Size(1126, 531);
+            this.schedule.Size = new System.Drawing.Size(1126, 425);
             this.schedule.TabIndex = 2;
             // 
             // schedulePage
@@ -86,15 +64,49 @@
             this.schedulePage.Controls.Add(this.label1);
             this.schedulePage.Controls.Add(this.dateTimePicker);
             this.schedulePage.Controls.Add(this.dataGridView1);
-            this.schedulePage.Controls.Add(this.button1);
             this.schedulePage.Location = new System.Drawing.Point(4, 25);
             this.schedulePage.Name = "schedulePage";
             this.schedulePage.Padding = new System.Windows.Forms.Padding(3);
-            this.schedulePage.Size = new System.Drawing.Size(1118, 502);
+            this.schedulePage.Size = new System.Drawing.Size(1118, 396);
             this.schedulePage.TabIndex = 0;
             this.schedulePage.Text = "Расписание";
             this.schedulePage.UseVisualStyleBackColor = true;
             this.schedulePage.Click += new System.EventHandler(this.schedulePage_Click);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(33, 4);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(44, 16);
+            this.label1.TabIndex = 3;
+            this.label1.Text = "label1";
+            // 
+            // dateTimePicker
+            // 
+            this.dateTimePicker.Location = new System.Drawing.Point(915, 3);
+            this.dateTimePicker.Name = "dateTimePicker";
+            this.dateTimePicker.Size = new System.Drawing.Size(200, 22);
+            this.dateTimePicker.TabIndex = 2;
+            this.dateTimePicker.ValueChanged += new System.EventHandler(this.dateTimePicker_ValueChanged);
+            // 
+            // dataGridView1
+            // 
+            this.dataGridView1.AllowUserToAddRows = false;
+            this.dataGridView1.AllowUserToDeleteRows = false;
+            this.dataGridView1.AllowUserToOrderColumns = true;
+            this.dataGridView1.AllowUserToResizeRows = false;
+            this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Location = new System.Drawing.Point(3, 28);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.ReadOnly = true;
+            this.dataGridView1.RowHeadersVisible = false;
+            this.dataGridView1.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
+            this.dataGridView1.RowTemplate.Height = 24;
+            this.dataGridView1.Size = new System.Drawing.Size(1115, 364);
+            this.dataGridView1.TabIndex = 0;
+            this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             // 
             // reportPage
             // 
@@ -106,7 +118,6 @@
             this.reportPage.Controls.Add(this.label4);
             this.reportPage.Controls.Add(this.FIO);
             this.reportPage.Controls.Add(this.dateTimePicker1);
-            this.reportPage.Controls.Add(this.button2);
             this.reportPage.Location = new System.Drawing.Point(4, 25);
             this.reportPage.Name = "reportPage";
             this.reportPage.Padding = new System.Windows.Forms.Padding(3);
@@ -115,43 +126,6 @@
             this.reportPage.Text = "Отчёт";
             this.reportPage.UseVisualStyleBackColor = true;
             this.reportPage.Click += new System.EventHandler(this.tabPage2_Click);
-            // 
-            // dataGridView1
-            // 
-            this.dataGridView1.AllowUserToOrderColumns = true;
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(3, 28);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.RowHeadersWidth = 60;
-            this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(1115, 364);
-            this.dataGridView1.TabIndex = 1;
-            this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
-            // 
-            // dateTimePicker
-            // 
-            this.dateTimePicker.Location = new System.Drawing.Point(915, 3);
-            this.dateTimePicker.Name = "dateTimePicker";
-            this.dateTimePicker.Size = new System.Drawing.Size(200, 22);
-            this.dateTimePicker.TabIndex = 2;
-            this.dateTimePicker.ValueChanged += new System.EventHandler(this.dateTimePicker_ValueChanged);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(33, 4);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(44, 16);
-            this.label1.TabIndex = 3;
-            this.label1.Text = "label1";
-            // 
-            // dateTimePicker1
-            // 
-            this.dateTimePicker1.Location = new System.Drawing.Point(523, 124);
-            this.dateTimePicker1.Name = "dateTimePicker1";
-            this.dateTimePicker1.Size = new System.Drawing.Size(200, 22);
-            this.dateTimePicker1.TabIndex = 2;
-            this.dateTimePicker1.ValueChanged += new System.EventHandler(this.dateTimePicker1_ValueChanged);
             // 
             // money
             // 
@@ -216,11 +190,20 @@
             this.FIO.TabIndex = 7;
             this.FIO.Text = " .";
             // 
+            // dateTimePicker1
+            // 
+            this.dateTimePicker1.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dateTimePicker1.Location = new System.Drawing.Point(515, 180);
+            this.dateTimePicker1.Name = "dateTimePicker1";
+            this.dateTimePicker1.Size = new System.Drawing.Size(200, 22);
+            this.dateTimePicker1.TabIndex = 2;
+            this.dateTimePicker1.ValueChanged += new System.EventHandler(this.dateTimePicker1_ValueChanged);
+            // 
             // DriverForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1126, 531);
+            this.ClientSize = new System.Drawing.Size(1126, 425);
             this.Controls.Add(this.schedule);
             this.Name = "DriverForm";
             this.Text = "Водитель";
@@ -228,17 +211,14 @@
             this.schedule.ResumeLayout(false);
             this.schedulePage.ResumeLayout(false);
             this.schedulePage.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.reportPage.ResumeLayout(false);
             this.reportPage.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
-
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
         private System.Windows.Forms.TabControl schedule;
         private System.Windows.Forms.TabPage schedulePage;
         private System.Windows.Forms.TabPage reportPage;

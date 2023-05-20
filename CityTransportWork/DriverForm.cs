@@ -46,7 +46,7 @@ namespace CityTransportWork
                 dataAdapter.Fill(dataSet);
                 sqlConnection.Close();
                 dataGridView1.DataSource = dataSet.Tables[0];
-                dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.ColumnHeader;
+             
             }
             catch (Exception ex)
             {
@@ -71,9 +71,9 @@ namespace CityTransportWork
                 dataAdapter.Fill(dataSet);
                 sqlConnection.Close();
                 FIO.Text = dataSet.Tables[0].Rows[0].ItemArray[0].ToString();
-                if (dataSet.Tables[0].Rows[0].ItemArray[1].ToString() != null)
+                if (dataSet.Tables[0].Rows[0].ItemArray[1].ToString() != "")
                 {
-                    
+                    string r = dataSet.Tables[0].Rows[0].ItemArray[1].ToString();
                     trips.Text = dataSet.Tables[0].Rows[0].ItemArray[1].ToString();
                     time.Text = dataSet.Tables[0].Rows[0].ItemArray[2].ToString();
                     money.Text = dataSet.Tables[0].Rows[0].ItemArray[3].ToString();
