@@ -41,7 +41,7 @@
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersWidth = 60;
             this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(1157, 425);
+            this.dataGridView1.Size = new System.Drawing.Size(1404, 425);
             this.dataGridView1.TabIndex = 0;
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             // 
@@ -57,7 +57,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1161, 603);
+            this.ClientSize = new System.Drawing.Size(1410, 652);
             this.Controls.Add(this.dateTimePicker);
             this.Controls.Add(this.dataGridView1);
             this.Name = "DriverSchedule";

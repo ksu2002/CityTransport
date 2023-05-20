@@ -63,9 +63,9 @@ namespace CityTransportWork
 
         }
         public int user_ID;
-        private void monthCalendar1_DateChanged(object sender, DateRangeEventArgs e)
+        private void showReport()
         {
-            DateTime date = e.Start;
+            DateTime date = DateTime.Now;
             string connectionString = ConfigurationManager.ConnectionStrings["bdConnectionString"].ConnectionString;
             SqlConnection sqlConnection = new SqlConnection(connectionString);
             try
@@ -90,6 +90,11 @@ namespace CityTransportWork
                 MessageBox.Show(ex.Message);
                 return;
             }
+        }
+        private void monthCalendar1_DateChanged(object sender, DateRangeEventArgs e)
+        {
+            DateTime date = e.Start;
+          
             
         }
     }
