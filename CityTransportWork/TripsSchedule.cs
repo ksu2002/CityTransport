@@ -17,7 +17,6 @@ namespace CityTransportWork
         {
             InitializeComponent();
         }
-      //  private string date = DateTime.Now.ToString();
         private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
         {
             dtime = dateTimePicker1.Value;
@@ -30,20 +29,10 @@ namespace CityTransportWork
                 SqlCommand command = new SqlCommand(query, sqlConnection);
                 SqlDataAdapter dataAdapter = new SqlDataAdapter();
                 dataAdapter.SelectCommand = command;
-
-                // Создание объекта DataSet
                 DataSet dataSet = new DataSet();
-
-                // Открытие соединения с базой данных
                 sqlConnection.Open();
-
-                // Заполнение DataSet
                 dataAdapter.Fill(dataSet);
-
-                // Закрытие соединения с базой данных
                 sqlConnection.Close();
-
-                // Привязка DataSet к DataGridView
                 dataGridView1.DataSource = dataSet.Tables[0];
 
 
@@ -78,8 +67,6 @@ namespace CityTransportWork
 
         private void TripsSchedule_Load(object sender, EventArgs e)
         {
-           // string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["bdConnectionString"].ConnectionString;
-          //  SqlConnection sqlConnection = new SqlConnection(connectionString);
             if (number != -1 && transportTypeName != null && driverName != null && carName != null && direction != null)
             {
 
