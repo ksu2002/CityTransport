@@ -20,9 +20,30 @@ namespace CityTransportWork
             InitializeComponent();
         }
         public int user_ID;
-        
+        private int driver_ID;
+
         private void DriverForm_Load(object sender, EventArgs e)
         {
+            string connectionString = ConfigurationManager.ConnectionStrings["bdConnectionString"].ConnectionString;
+            SqlConnection sqlConnection = new SqlConnection(connectionString);
+
+            try
+            {
+                SqlCommand sqlCommand = new SqlCommand($"dbo.[getDriverIDbyUserID] {user_ID}", sqlConnection);
+                sqlConnection.Open();
+                SqlDataReader reader = sqlCommand.ExecuteReader();
+                if (reader.Read())
+                {
+                    driver_ID = reader.GetInt32(0);
+                }
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return;
+            }
+            sqlConnection.Close();
             dateTimePicker1.Format = DateTimePickerFormat.Custom;
             dateTimePicker1.CustomFormat = "yyyy-MM";
             showSchedule();
@@ -37,7 +58,7 @@ namespace CityTransportWork
             SqlConnection sqlConnection = new SqlConnection(connectionString);
             try
             {
-                string query = ($"SELECT*FROM dbo.TripsForDriverPerDay({user_ID}, '{date}')");
+                string query = ($"SELECT*FROM dbo.TripsForDriverPerDay({driver_ID}, '{date}')");
                 SqlCommand command = new SqlCommand(query, sqlConnection);
                 SqlDataAdapter dataAdapter = new SqlDataAdapter();
                 dataAdapter.SelectCommand = command;
@@ -61,7 +82,7 @@ namespace CityTransportWork
             SqlConnection sqlConnection = new SqlConnection(connectionString);
             try
             {
-                string query = ($"SELECT*FROM dbo.MonthlyReport({user_ID}, {Int32.Parse(date.Year.ToString())},{Int32.Parse(date.Month.ToString())})");
+                string query = ($"SELECT*FROM dbo.MonthlyReport({driver_ID}, {Int32.Parse(date.Year.ToString())},{Int32.Parse(date.Month.ToString())})");
                 SqlCommand command = new SqlCommand(query, sqlConnection);
                 SqlDataAdapter dataAdapter = new SqlDataAdapter();
                 dataAdapter.SelectCommand = command;
@@ -92,19 +113,6 @@ namespace CityTransportWork
                 MessageBox.Show(ex.Message);
                 return;
             }
-        }
-        private void button1_Click(object sender, EventArgs e)
-        {
-            DriverSchedule driverSchedule = new DriverSchedule();
-            driverSchedule.user_ID = user_ID;
-            driverSchedule.Show();
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            MonthlyReport monthlyReport = new MonthlyReport();
-            monthlyReport.user_ID = user_ID;
-            monthlyReport.Show();
         }
 
         private void tabPage2_Click(object sender, EventArgs e)
