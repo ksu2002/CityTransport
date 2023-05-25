@@ -315,30 +315,30 @@ namespace CityTransportWork
               
             }
         }
-        private void button2_Click_1(object sender, EventArgs e)
+        private void deleteTrip()
         {
             string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["bdConnectionString"].ConnectionString;
 
             DataGridViewComboBoxCell cell = new DataGridViewComboBoxCell();
-                int rn = Int32.Parse(dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[0].Value.ToString());
-                string d = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[1].Value.ToString();
-                string tt = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[2].Value.ToString();
-                string tdt = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[3].Value.ToString();
-                string dn = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[5].Value.ToString();
-                string tn = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[6].Value.ToString();
+            int rn = Int32.Parse(dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[0].Value.ToString());
+            string d = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[1].Value.ToString();
+            string tt = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[2].Value.ToString();
+            string tdt = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[3].Value.ToString();
+            string dn = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[5].Value.ToString();
+            string tn = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[6].Value.ToString();
             SqlConnection sqlConnection = new SqlConnection(connectionString);
             sqlConnection.Open();
             try
             {
-            SqlCommand command = new SqlCommand("DeleteTrip", sqlConnection);
-            command.CommandType = CommandType.StoredProcedure;
-            command.Parameters.AddWithValue("@RouteNumber", rn);
-            command.Parameters.AddWithValue("@Dir", d);
-            command.Parameters.AddWithValue("@TransportType", tt);
-            command.Parameters.AddWithValue("@TripDepartureTime", tdt);
-            command.Parameters.AddWithValue("@DriverName", dn);
-            command.Parameters.AddWithValue("@TransportNumber", tn);
-            command.ExecuteNonQuery();
+                SqlCommand command = new SqlCommand("DeleteTrip", sqlConnection);
+                command.CommandType = CommandType.StoredProcedure;
+                command.Parameters.AddWithValue("@RouteNumber", rn);
+                command.Parameters.AddWithValue("@Dir", d);
+                command.Parameters.AddWithValue("@TransportType", tt);
+                command.Parameters.AddWithValue("@TripDepartureTime", tdt);
+                command.Parameters.AddWithValue("@DriverName", dn);
+                command.Parameters.AddWithValue("@TransportNumber", tn);
+                command.ExecuteNonQuery();
             }
             catch (Exception ex)
             {
@@ -346,8 +346,58 @@ namespace CityTransportWork
                 return;
             }
             sqlConnection.Close();
+        }
+        private void button2_Click_1(object sender, EventArgs e)
+        {
+            deleteTrip();
             dtime = dateTimePicker1.Value.Date;
             showSchedule();
+        }
+        private void getTripID()
+        {
+            try
+            {
+                string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["bdConnectionString"].ConnectionString;
+                DataGridViewComboBoxCell cell = new DataGridViewComboBoxCell();
+
+
+                int rn = Int32.Parse(dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[0].Value.ToString());
+                string d = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[1].Value.ToString();
+                string tt = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[2].Value.ToString();
+                string tdt = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[3].Value.ToString();
+                string dn = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[5].Value.ToString();
+                string tn = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[6].Value.ToString();
+
+                AddTrip addTrip = new AddTrip();
+
+                addTrip.number = rn;
+                addTrip.transportTypeName = tt;
+                addTrip.depTime = tdt;
+                addTrip.direction = d;
+                addTrip.driverName = dn;
+                addTrip.carName = tn;
+                dtime = dateTimePicker1.Value;
+                addTrip.year = dtime.Year;
+                addTrip.month = dtime.Month;
+                addTrip.day = dtime.Day;
+                addTrip.update = 1;
+                deleteTrip();
+                addTrip.Show();
+               
+                addTrip.Closed += Form2_Closed;
+            }
+
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return;
+
+            }
+        } 
+        private void button3_Click(object sender, EventArgs e)
+        {
+            
+            getTripID();
         }
     }
 }
