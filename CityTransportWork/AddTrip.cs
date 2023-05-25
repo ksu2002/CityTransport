@@ -143,15 +143,10 @@ namespace CityTransportWork
                 transportType.Items.Clear();
                 dir.Items.Clear();
                 number = Int32.Parse(routeNumber.SelectedItem.ToString());
-
                 SqlCommand command = new SqlCommand("dbo.[getTransportTypeName]", sqlConnection);
                 command.CommandType = CommandType.StoredProcedure;
-
-                // Добавляем параметр @number
                 command.Parameters.AddWithValue("@number", number);
-
                 SqlDataReader reader1 = command.ExecuteReader();
-
                 while (reader1.Read())
                 {
                     transportType.Items.Add(reader1["TransportTypeName"].ToString());
@@ -178,20 +173,12 @@ namespace CityTransportWork
                 try
                 {
                     sqlConnection.Open();
-                    // (stop1.SelectedIndex != -1
                     transportTypeName = transportType.SelectedIndex != -1 ? transportType.SelectedItem.ToString() : null;
-
                     SqlCommand command = new SqlCommand("dbo.[getDir]", sqlConnection);
                     command.CommandType = CommandType.StoredProcedure;
-
-                    // Добавляем параметр @number
                     command.Parameters.AddWithValue("@number", number);
-
-                    // Добавляем параметр @type
                     command.Parameters.AddWithValue("@type", transportTypeName);
-
                     SqlDataReader reader = command.ExecuteReader();
-
                     while (reader.Read())
                     {
                         dir.Items.Add(reader["RouteName"].ToString());
@@ -222,19 +209,85 @@ namespace CityTransportWork
         {
             if (number != -1 && transportTypeName != null && driverName != null && carName != null && direction != null)
             {
-                this.Close();
-                SchedulerForm schedulerForm = new SchedulerForm();
-                schedulerForm.number = number;
-                schedulerForm.transportTypeName = transportTypeName;
-                schedulerForm.dtime = dtime;
-                schedulerForm.driverName = driverName;
-                schedulerForm.carName = carName;
-                schedulerForm.direction = direction;
-                schedulerForm.Show();
-            }
-            else
-            {
-                MessageBox.Show("Заполните все поля");
+
+                if (number != -1 && transportTypeName != null && driverName != null && carName != null && direction != null)
+                {
+
+                    try
+                    {
+                        string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["bdConnectionString"].ConnectionString;
+
+                        SqlConnection sqlConnection = new SqlConnection(connectionString);
+                        sqlConnection.Open();
+                        SqlCommand command = new SqlCommand("getRouteInfo", sqlConnection);
+                        command.CommandType = CommandType.StoredProcedure;
+                        SqlParameter routeNumberParam = new SqlParameter("@routeNumber", SqlDbType.Int);
+                        routeNumberParam.Value = number;
+                        command.Parameters.Add(routeNumberParam);
+
+                        SqlParameter transportTypeParam = new SqlParameter("@transportType", SqlDbType.VarChar, 10);
+                        transportTypeParam.Value = transportTypeName;
+                        command.Parameters.Add(transportTypeParam);
+
+                        SqlParameter routeNameParam = new SqlParameter("@routeName", SqlDbType.VarChar, 51);
+                        routeNameParam.Value = direction;
+                        command.Parameters.Add(routeNameParam);
+
+                        SqlParameter driverParam = new SqlParameter("@driver", SqlDbType.VarChar, 40);
+                        driverParam.Value = driverName;
+                        command.Parameters.Add(driverParam);
+
+                        SqlParameter carParam = new SqlParameter("@car", SqlDbType.VarChar, 6);
+                        carParam.Value = carName;
+                        command.Parameters.Add(carParam);
+
+                        SqlParameter routeIdParam = new SqlParameter("@routeid", SqlDbType.Int);
+                        routeIdParam.Direction = ParameterDirection.Output;
+                        command.Parameters.Add(routeIdParam);
+
+                        SqlParameter driverIdParam = new SqlParameter("@driverid", SqlDbType.Int);
+                        driverIdParam.Direction = ParameterDirection.Output;
+                        command.Parameters.Add(driverIdParam);
+
+                        SqlParameter transportIdParam = new SqlParameter("@transportid", SqlDbType.Int);
+                        transportIdParam.Direction = ParameterDirection.Output;
+                        command.Parameters.Add(transportIdParam);
+
+                        command.ExecuteNonQuery();
+
+                        int routeId = (int)routeIdParam.Value;
+                        int driverId = (int)driverIdParam.Value;
+                        int transportId = (int)transportIdParam.Value;
+
+
+
+                        SqlCommand cmd = new SqlCommand("insertTrip", sqlConnection);
+
+                        cmd.CommandType = CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@depTime", dtime);
+                        cmd.Parameters.AddWithValue("@routeid", routeId);
+                        cmd.Parameters.AddWithValue("@driverid", driverId);
+                        cmd.Parameters.AddWithValue("@carid", transportId);
+
+                        cmd.ExecuteNonQuery();
+                        sqlConnection.Close();
+                    }
+
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                        return;
+
+
+                    }
+
+                    this.Close();
+                }
+                else
+                {
+                    MessageBox.Show("Заполните все поля");
+                }
             }
         }
 

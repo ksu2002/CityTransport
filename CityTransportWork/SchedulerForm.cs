@@ -34,7 +34,7 @@ namespace CityTransportWork
         {
             date = DateTime.Now;
             showCondition();
-            if (number != -1 && transportTypeName != null && driverName != null && carName != null && direction != null)
+           /* if (number != -1 && transportTypeName != null && driverName != null && carName != null && direction != null)
             {
 
                 try
@@ -103,9 +103,9 @@ namespace CityTransportWork
                     MessageBox.Show(ex.Message);
                     return;
 
-
-                }
-            }
+ }
+                }*/
+           
                 dtime = DateTime.Now;
                 showSchedule();
 
@@ -180,8 +180,14 @@ namespace CityTransportWork
             addTrip.month = dtime.Month;
             addTrip.day = dtime.Day;
             addTrip.Show();
-        }
+            addTrip.Closed += Form2_Closed;
 
+
+        }
+        private void Form2_Closed(object sender, EventArgs e)
+        {
+            showSchedule();
+        }
         private void tabPage1_Click(object sender, EventArgs e)
         {
 
