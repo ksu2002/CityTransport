@@ -65,27 +65,31 @@ namespace CityTransportWork
                 try
                 {
                     sqlConnection.Open();
-                    SqlCommand command3 = new SqlCommand("dbo.[getCar]", sqlConnection);
-                    command3.CommandType = CommandType.StoredProcedure;
-                    command3.Parameters.AddWithValue("@type", transportTypeName);
-                    command3.Parameters.AddWithValue("@date", dtime.Date);
+                    SqlCommand command3 = new SqlCommand("dbo.getFreeCars", sqlConnection);
+                command3.CommandType = CommandType.StoredProcedure;
+                command3.Parameters.AddWithValue("@data", dtime);
+                command3.Parameters.AddWithValue("@routeNumber", number);
+                command3.Parameters.AddWithValue("@transportType", transportTypeName);
+                command3.Parameters.AddWithValue("@routeName", direction);
+                SqlDataReader reader3 = command3.ExecuteReader();
 
-                    SqlDataReader reader3 = command3.ExecuteReader();
-
-                    while (reader3.Read())
-                    {
-                        car.Items.Add(reader3["TransportNumber"].ToString());
-                    }
-                    reader3.Close();
-                    sqlConnection.Close();
-                }
-                catch (Exception ex)
+                while (reader3.Read())
                 {
-                    MessageBox.Show(ex.Message);
-                    return;
+                    car.Items.Add(reader3["TransportNumber"].ToString());
                 }
+                reader3.Close();
+                sqlConnection.Close();
+
             }
-           
+                catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return;
+            }
+
+
+        }
+
         }
         string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["bdConnectionString"].ConnectionString;
 
