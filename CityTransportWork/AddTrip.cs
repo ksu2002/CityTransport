@@ -140,13 +140,13 @@ namespace CityTransportWork
         }
         private void getCarAndDrivers()
         {
-            if (number != -1 && transportTypeName != null && depTime != null && driverName != null && carName != null && direction != null && update == 1)
+            if (update == 1)
             {
                 for (int i = 0; i < dir.Items.Count; i++)
                     if (dir.Items[i].ToString() == direction)
                         dir.SelectedIndex = i;
                 dtime = dateTimePicker1.Value;
-            
+                driver.Items.Clear();
                 getDrivers();
 
                 for (int i = 0; i < driver.Items.Count; i++)
@@ -207,29 +207,41 @@ namespace CityTransportWork
         }
         string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["bdConnectionString"].ConnectionString;
 
-
+        private int oldNumber;
+        private string oldTransportTypeName, oldDriverName,oldCarName,oldDirection, oldDepTime;
         private void AddTrip_Load(object sender, EventArgs e)
         {
-            dateTimePicker1.Format = DateTimePickerFormat.Custom;
-            dateTimePicker1.CustomFormat = " HH:mm:ss dd.MM.yyyy";
-            dateTimePicker1.Value = new DateTime(year, month, day); // устанавливаем дату
+           // dateTimePicker1.Format = DateTimePickerFormat.Custom;
+           // dateTimePicker1.CustomFormat = " HH:mm:ss dd.MM.yyyy";
+            dateTimePicker1.Value = new DateTime(year, month, day); 
             getRouteNumber();
-            if (number != -1 && transportTypeName != null && depTime != null && driverName != null && carName != null && direction != null && update == 1)
+            if (update == 1)
             {
+                oldNumber = number;
+                oldTransportTypeName = transportTypeName;   
+                oldDriverName = driverName;
+                oldCarName = carName;
+                oldDirection = direction;
+                oldDepTime = depTime;
+
                     for (int i = 0; i < routeNumber.Items.Count; i++)
                     if (routeNumber.Items[i].ToString() == number.ToString())
                         routeNumber.SelectedIndex = i;
-                    
-            
-    //        getTransportType();
-            if (transportType.SelectedIndex != -1)
-            {
-                getDirection();
+           // if (transportType.SelectedIndex != -1)
+           // {
+            //    getDirection();
 
-            }
+//            }
 
-            dateTimePicker1.Value = DateTime.ParseExact(depTime, "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture);
-                update = 2;
+               try {
+                    dateTimePicker1.Value = DateTime.ParseExact(depTime, "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture); 
+                  update = 2;
+                }
+               catch { 
+                    dateTimePicker1.Value = DateTime.ParseExact(depTime, "dd.MM.yyyy H:mm:ss", CultureInfo.InvariantCulture);
+                    update = 2;
+                }
+              
 
             }
            
@@ -244,9 +256,12 @@ namespace CityTransportWork
 
         private void routeNumber_SelectedIndexChanged(object sender, EventArgs e)
         {
+            transportType.SelectedItem = null;
             transportType.Items.Clear();
+            dir.SelectedItem = null;
+            dir.Items.Clear();
             getTransportType();
-            if (number != -1 && transportTypeName != null && depTime != null && driverName != null && carName != null && direction != null)
+            if (update == 1)
             {
                 for (int i = 0; i < transportType.Items.Count; i++)
                     if (transportType.Items[i].ToString() == transportTypeName)
@@ -254,38 +269,45 @@ namespace CityTransportWork
             }
             else
             {
-                SqlConnection sqlConnection = new SqlConnection(connectionString);
-                sqlConnection.Open();
+               // SqlConnection sqlConnection = new SqlConnection(connectionString);
+                //sqlConnection.Open();
                 driver.SelectedItem = null;
                 driver.Items.Clear();
-                transportType.SelectedItem = null;
+             /*   transportType.SelectedItem = null;
                 transportType.Items.Clear();
                 dir.SelectedItem = null;
                 transportType.Items.Clear();
                 dir.Items.Clear();
-                getTransportType();
+                getTransportType();*/
             }
             
         }
 
         private void transportType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (number != -1 && transportTypeName != null && depTime != null && driverName != null && carName != null && direction != null && update==1)
+            dir.SelectedItem = null;
+            dir.Items.Clear();
+            // getDirection();
+            if (transportType.SelectedIndex != -1)
+                {
+                    getDirection();
+
+                
+            if ( update==1)
             {
                 for (int i = 0; i < dir.Items.Count; i++)
                     if (dir.Items[i].ToString() == direction)
                         dir.SelectedIndex = i;
             }
             else {
+
+                driver.SelectedItem = null;
+                driver.Items.Clear();
                 car.SelectedItem = null;
             car.Items.Clear();
-                if (transportType.SelectedIndex != -1)
-                {
-                    getDirection();
-
-                }
+              /* */
             }
-            
+            }
         }
 
         private void driver_SelectedIndexChanged(object sender, EventArgs e)
@@ -362,6 +384,7 @@ namespace CityTransportWork
 
                     cmd.ExecuteNonQuery();
                     sqlConnection.Close();
+                    update = 4;
                 }
 
                 catch (Exception ex)
@@ -378,6 +401,8 @@ namespace CityTransportWork
             {
                 MessageBox.Show("Заполните все поля");
             }
+
+            
         }
         private void button1_Click(object sender, EventArgs e)
         {
@@ -397,12 +422,31 @@ namespace CityTransportWork
             if (e.CloseReason == CloseReason.UserClosing)
             {
                 if(update == 2)
-                    insertTrip();
+                {
+                   
+                    number = oldNumber;
+                    driverName = oldDriverName;
+                    transportTypeName = oldTransportTypeName;
+                    carName = oldCarName;
+                    direction = oldDirection;
+                    try
+                    {
+                        dtime = DateTime.ParseExact(oldDepTime, "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+                        update = 2;
+                    }
+                    catch
+                    {
+                        dtime = DateTime.ParseExact(oldDepTime, "dd.MM.yyyy H:mm:ss", CultureInfo.InvariantCulture);
+                        update = 2;
+                    }
+                    finally
+                    {
+                        insertTrip();
+                    }
+                }
+                   
             }
-            if (e.CloseReason == CloseReason.ApplicationExitCall)
-            {
-                
-            }
+            
         }
     }
 }
