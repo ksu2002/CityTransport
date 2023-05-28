@@ -34,82 +34,8 @@ namespace CityTransportWork
         {
             date = DateTime.Now;
             showCondition();
-           /* if (number != -1 && transportTypeName != null && driverName != null && carName != null && direction != null)
-            {
-
-                try
-                {
-                    string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["bdConnectionString"].ConnectionString;
-
-                    SqlConnection sqlConnection = new SqlConnection(connectionString);
-                    sqlConnection.Open();
-                    SqlCommand command = new SqlCommand("getRouteInfo", sqlConnection);
-                    command.CommandType = CommandType.StoredProcedure;
-                    SqlParameter routeNumberParam = new SqlParameter("@routeNumber", SqlDbType.Int);
-                    routeNumberParam.Value = number;
-                    command.Parameters.Add(routeNumberParam);
-
-                    SqlParameter transportTypeParam = new SqlParameter("@transportType", SqlDbType.VarChar, 10);
-                    transportTypeParam.Value = transportTypeName;
-                    command.Parameters.Add(transportTypeParam);
-
-                    SqlParameter routeNameParam = new SqlParameter("@routeName", SqlDbType.VarChar, 51);
-                    routeNameParam.Value = direction;
-                    command.Parameters.Add(routeNameParam);
-
-                    SqlParameter driverParam = new SqlParameter("@driver", SqlDbType.VarChar, 40);
-                    driverParam.Value = driverName;
-                    command.Parameters.Add(driverParam);
-
-                    SqlParameter carParam = new SqlParameter("@car", SqlDbType.VarChar, 6);
-                    carParam.Value = carName;
-                    command.Parameters.Add(carParam);
-
-                    SqlParameter routeIdParam = new SqlParameter("@routeid", SqlDbType.Int);
-                    routeIdParam.Direction = ParameterDirection.Output;
-                    command.Parameters.Add(routeIdParam);
-
-                    SqlParameter driverIdParam = new SqlParameter("@driverid", SqlDbType.Int);
-                    driverIdParam.Direction = ParameterDirection.Output;
-                    command.Parameters.Add(driverIdParam);
-
-                    SqlParameter transportIdParam = new SqlParameter("@transportid", SqlDbType.Int);
-                    transportIdParam.Direction = ParameterDirection.Output;
-                    command.Parameters.Add(transportIdParam);
-
-                    command.ExecuteNonQuery();
-
-                    int routeId = (int)routeIdParam.Value;
-                    int driverId = (int)driverIdParam.Value;
-                    int transportId = (int)transportIdParam.Value;
-
-
-
-                    SqlCommand cmd = new SqlCommand("insertTrip", sqlConnection);
-
-                    cmd.CommandType = CommandType.StoredProcedure;
-
-                    cmd.Parameters.AddWithValue("@depTime", dtime);
-                    cmd.Parameters.AddWithValue("@routeid", routeId);
-                    cmd.Parameters.AddWithValue("@driverid", driverId);
-                    cmd.Parameters.AddWithValue("@carid", transportId);
-
-                    cmd.ExecuteNonQuery();
-                    sqlConnection.Close();
-                }
-
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                    return;
-
- }
-                }*/
-           
-                dtime = DateTime.Now;
-                showSchedule();
-
-
+            dtime = DateTime.Now;
+            showSchedule();
         }
 
         private void showSchedule()
@@ -236,9 +162,15 @@ namespace CityTransportWork
                 string r = dataGridView2.Rows[e.RowIndex].Cells[1].Value.ToString();
                 string rr = cell.Value.ToString();
 
-                command1.Parameters.AddWithValue("@conditionName", selectedValue);
-                command1.Parameters.AddWithValue("@transportNumber", r);
-                command1.Parameters.AddWithValue("@conditionDate", date.Date);
+                SqlParameter conditionNameParam = new SqlParameter("@conditionName", SqlDbType.VarChar, 20);
+                conditionNameParam.Value = selectedValue;
+                command1.Parameters.Add(conditionNameParam);
+                SqlParameter transportNumberParam = new SqlParameter("@transportNumber", SqlDbType.VarChar, 6);
+                transportNumberParam.Value = r;
+                command1.Parameters.Add(transportNumberParam);
+                SqlParameter conditionDateParam = new SqlParameter("@conditionDate", SqlDbType.Date);
+                conditionDateParam.Value = date.Date;
+                command1.Parameters.Add(conditionDateParam);
                 command1.CommandType = CommandType.StoredProcedure;
                 command1.ExecuteNonQuery();
                 sqlConnection.Close();
@@ -300,7 +232,7 @@ namespace CityTransportWork
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
         {
 
-            if (e.RowIndex >= 0 && e.ColumnIndex >= 0) { 
+            if (e.RowIndex >= 0 && e.ColumnIndex >= 0 ) { 
 
                 int rn = Int32.Parse(dataGridView1.Rows[e.RowIndex].Cells[0].Value.ToString());
                 string d = dataGridView1.Rows[e.RowIndex].Cells[1].Value.ToString();
@@ -332,12 +264,24 @@ namespace CityTransportWork
             {
                 SqlCommand command = new SqlCommand("DeleteTrip", sqlConnection);
                 command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@RouteNumber", rn);
-                command.Parameters.AddWithValue("@Dir", d);
-                command.Parameters.AddWithValue("@TransportType", tt);
-                command.Parameters.AddWithValue("@TripDepartureTime", tdt);
-                command.Parameters.AddWithValue("@DriverName", dn);
-                command.Parameters.AddWithValue("@TransportNumber", tn);
+                SqlParameter routeNumberParam = new SqlParameter("@RouteNumber", SqlDbType.Int);
+                routeNumberParam.Value = rn;
+                command.Parameters.Add(routeNumberParam);
+                SqlParameter dirParam = new SqlParameter("@Dir", SqlDbType.VarChar, 41);
+                dirParam.Value = d;
+                command.Parameters.Add(dirParam);
+                SqlParameter transportTypeParam = new SqlParameter("@TransportType", SqlDbType.VarChar, 10);
+                transportTypeParam.Value = tt;
+                command.Parameters.Add(transportTypeParam);
+                SqlParameter tripDepartureTimeParam = new SqlParameter("@TripDepartureTime", SqlDbType.DateTime);
+                tripDepartureTimeParam.Value = tdt;
+                command.Parameters.Add(tripDepartureTimeParam);
+                SqlParameter driverNameParam = new SqlParameter("@DriverName", SqlDbType.VarChar, 40);
+                driverNameParam.Value = dn;
+                command.Parameters.Add(driverNameParam);
+                SqlParameter transportNumberParam = new SqlParameter("@TransportNumber", SqlDbType.VarChar, 6);
+                transportNumberParam.Value = tn;
+                command.Parameters.Add(transportNumberParam);
                 command.ExecuteNonQuery();
             }
             catch (Exception ex)
@@ -353,7 +297,7 @@ namespace CityTransportWork
             dtime = dateTimePicker1.Value.Date;
             showSchedule();
         }
-        private void getTripID()
+        private void button3_Click(object sender, EventArgs e)
         {
             try
             {
@@ -393,11 +337,6 @@ namespace CityTransportWork
                 return;
 
             }
-        } 
-        private void button3_Click(object sender, EventArgs e)
-        {
-            
-            getTripID();
         }
     }
 }

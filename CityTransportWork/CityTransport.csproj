@@ -94,12 +94,6 @@
     <Compile Include="SchedulerForm.Designer.cs">
       <DependentUpon>SchedulerForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="TripsSchedule.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="TripsSchedule.Designer.cs">
-      <DependentUpon>TripsSchedule.cs</DependentUpon>
-    </Compile>
     <EmbeddedResource Include="AddTrip.resx">
       <DependentUpon>AddTrip.cs</DependentUpon>
     </EmbeddedResource>
@@ -123,9 +117,6 @@
     </Compile>
     <EmbeddedResource Include="SchedulerForm.resx">
       <DependentUpon>SchedulerForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="TripsSchedule.resx">
-      <DependentUpon>TripsSchedule.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

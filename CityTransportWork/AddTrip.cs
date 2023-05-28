@@ -38,7 +38,9 @@ namespace CityTransportWork
                 number = Int32.Parse(routeNumber.SelectedItem.ToString());
                 SqlCommand command = new SqlCommand("dbo.[getTransportTypeName]", sqlConnection);
                 command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@number", number);
+                SqlParameter numberParam = new SqlParameter("@number", SqlDbType.Int);
+                numberParam.Value = number;
+                command.Parameters.Add(numberParam);
                 SqlDataReader reader1 = command.ExecuteReader();
                 while (reader1.Read())
                 {
@@ -62,9 +64,8 @@ namespace CityTransportWork
             try
             {
 
-                SqlCommand command1 = new SqlCommand("dbo.[getRouteNumber]", sqlConnection);
+                SqlCommand command1 = new SqlCommand("getRouteNumber", sqlConnection);
                 command1.CommandType = CommandType.StoredProcedure;
-
                 SqlDataReader reader1 = command1.ExecuteReader();
 
                 while (reader1.Read())
@@ -87,20 +88,28 @@ namespace CityTransportWork
             sqlConnection.Open();
             try
             {
-                SqlCommand command1 = new SqlCommand("getFreeDrivers", sqlConnection);
-                command1.CommandType = CommandType.StoredProcedure;
-                command1.Parameters.AddWithValue("@data", dtime);
-                command1.Parameters.AddWithValue("@routeNumber", number);
-                command1.Parameters.AddWithValue("@transportType", transportTypeName);
-                command1.Parameters.AddWithValue("@routeName", direction);
-                command1.CommandType = CommandType.StoredProcedure;
-                SqlDataReader reader1 = command1.ExecuteReader();
+                SqlCommand command = new SqlCommand("getFreeDrivers", sqlConnection);
+                command.CommandType = CommandType.StoredProcedure;
 
-                while (reader1.Read())
+                SqlParameter dataParam = new SqlParameter("@data", SqlDbType.DateTime);
+                dataParam.Value = dtime;
+                command.Parameters.Add(dataParam);
+                SqlParameter routeNumberParam = new SqlParameter("@routeNumber", SqlDbType.Int);
+                routeNumberParam.Value = number;
+                command.Parameters.Add(routeNumberParam);
+                SqlParameter transportTypeParam = new SqlParameter("@transportType", SqlDbType.VarChar, 10);
+                transportTypeParam.Value = transportTypeName;
+                command.Parameters.Add(transportTypeParam);
+                SqlParameter routeNameParam = new SqlParameter("@routeName", SqlDbType.VarChar, 10);
+                routeNameParam.Value = direction;
+                command.Parameters.Add(routeNameParam);
+                SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
                 {
-                    driver.Items.Add(reader1["FIO"].ToString());
+                    driver.Items.Add(reader["FIO"].ToString());
                 }
-                reader1.Close();
+                reader.Close();
 
                 sqlConnection.Close();
             }
@@ -116,19 +125,28 @@ namespace CityTransportWork
             try
             {
                 sqlConnection.Open();
-                SqlCommand command3 = new SqlCommand("dbo.getFreeCars", sqlConnection);
-                command3.CommandType = CommandType.StoredProcedure;
-                command3.Parameters.AddWithValue("@data", dtime);
-                command3.Parameters.AddWithValue("@routeNumber", number);
-                command3.Parameters.AddWithValue("@transportType", transportTypeName);
-                command3.Parameters.AddWithValue("@routeName", direction);
-                SqlDataReader reader3 = command3.ExecuteReader();
+                SqlCommand command = new SqlCommand("dbo.getFreeCars", sqlConnection);
+                command.CommandType = CommandType.StoredProcedure;
 
-                while (reader3.Read())
+                SqlParameter dataParam = new SqlParameter("@data", SqlDbType.DateTime);
+                dataParam.Value = dtime;
+                command.Parameters.Add(dataParam);
+                SqlParameter routeNumberParam = new SqlParameter("@routeNumber", SqlDbType.Int);
+                routeNumberParam.Value = number;
+                command.Parameters.Add(routeNumberParam);
+                SqlParameter transportTypeParam = new SqlParameter("@transportType", SqlDbType.VarChar, 10);
+                transportTypeParam.Value = transportTypeName;
+                command.Parameters.Add(transportTypeParam);
+                SqlParameter routeNameParam = new SqlParameter("@routeName", SqlDbType.VarChar, 10);
+                routeNameParam.Value = direction;
+                command.Parameters.Add(routeNameParam);
+                SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
                 {
-                    car.Items.Add(reader3["TransportNumber"].ToString());
+                    car.Items.Add(reader["TransportNumber"].ToString());
                 }
-                reader3.Close();
+                reader.Close();
                 sqlConnection.Close();
 
             }
@@ -185,8 +203,12 @@ namespace CityTransportWork
                 transportTypeName = transportType.SelectedIndex != -1 ? transportType.SelectedItem.ToString() : null;
                 SqlCommand command = new SqlCommand("dbo.[getDir]", sqlConnection);
                 command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@number", number);
-                command.Parameters.AddWithValue("@type", transportTypeName);
+                SqlParameter routeNumberParam = new SqlParameter("@number", SqlDbType.Int);
+                routeNumberParam.Value = number;
+                command.Parameters.Add(routeNumberParam);
+                SqlParameter typeParam = new SqlParameter("@type", SqlDbType.VarChar, 10);
+                typeParam.Value = transportTypeName;
+                command.Parameters.Add(typeParam);
                 SqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
                 {
@@ -211,8 +233,6 @@ namespace CityTransportWork
         private string oldTransportTypeName, oldDriverName,oldCarName,oldDirection, oldDepTime;
         private void AddTrip_Load(object sender, EventArgs e)
         {
-           // dateTimePicker1.Format = DateTimePickerFormat.Custom;
-           // dateTimePicker1.CustomFormat = " HH:mm:ss dd.MM.yyyy";
             dateTimePicker1.Value = new DateTime(year, month, day); 
             getRouteNumber();
             if (update == 1)
@@ -227,11 +247,6 @@ namespace CityTransportWork
                     for (int i = 0; i < routeNumber.Items.Count; i++)
                     if (routeNumber.Items[i].ToString() == number.ToString())
                         routeNumber.SelectedIndex = i;
-           // if (transportType.SelectedIndex != -1)
-           // {
-            //    getDirection();
-
-//            }
 
                try {
                     dateTimePicker1.Value = DateTime.ParseExact(depTime, "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture); 
@@ -269,16 +284,8 @@ namespace CityTransportWork
             }
             else
             {
-               // SqlConnection sqlConnection = new SqlConnection(connectionString);
-                //sqlConnection.Open();
                 driver.SelectedItem = null;
                 driver.Items.Clear();
-             /*   transportType.SelectedItem = null;
-                transportType.Items.Clear();
-                dir.SelectedItem = null;
-                transportType.Items.Clear();
-                dir.Items.Clear();
-                getTransportType();*/
             }
             
         }
@@ -287,7 +294,6 @@ namespace CityTransportWork
         {
             dir.SelectedItem = null;
             dir.Items.Clear();
-            // getDirection();
             if (transportType.SelectedIndex != -1)
                 {
                     getDirection();
@@ -305,7 +311,6 @@ namespace CityTransportWork
                 driver.Items.Clear();
                 car.SelectedItem = null;
             car.Items.Clear();
-              /* */
             }
             }
         }
@@ -376,12 +381,18 @@ namespace CityTransportWork
                     SqlCommand cmd = new SqlCommand("insertTrip", sqlConnection);
 
                     cmd.CommandType = CommandType.StoredProcedure;
-
-                    cmd.Parameters.AddWithValue("@depTime", dtime);
-                    cmd.Parameters.AddWithValue("@routeid", routeId);
-                    cmd.Parameters.AddWithValue("@driverid", driverId);
-                    cmd.Parameters.AddWithValue("@carid", transportId);
-
+                    SqlParameter depTimeParam = new SqlParameter("@depTime", SqlDbType.DateTime);
+                    depTimeParam.Value = dtime;
+                    cmd.Parameters.Add(depTimeParam);
+                    SqlParameter routeidParam = new SqlParameter("@routeid", SqlDbType.Int);
+                    routeidParam.Value = routeId;
+                    cmd.Parameters.Add(routeidParam);
+                    SqlParameter driveridParam = new SqlParameter("@driverid", SqlDbType.Int);
+                    driveridParam.Value = driverId;
+                    cmd.Parameters.Add(driveridParam);
+                    SqlParameter transportidParam = new SqlParameter("@carid", SqlDbType.Int);
+                    transportidParam.Value = transportId;
+                    cmd.Parameters.Add(transportidParam);
                     cmd.ExecuteNonQuery();
                     sqlConnection.Close();
                     update = 4;
@@ -432,12 +443,10 @@ namespace CityTransportWork
                     try
                     {
                         dtime = DateTime.ParseExact(oldDepTime, "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture);
-                        update = 2;
                     }
                     catch
                     {
                         dtime = DateTime.ParseExact(oldDepTime, "dd.MM.yyyy H:mm:ss", CultureInfo.InvariantCulture);
-                        update = 2;
                     }
                     finally
                     {

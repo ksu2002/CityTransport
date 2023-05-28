@@ -29,21 +29,25 @@ namespace CityTransportWork
 
             try
             {
-                SqlCommand sqlCommand = new SqlCommand($"dbo.[getDriverIDbyUserID] {user_ID}", sqlConnection);
                 sqlConnection.Open();
+                SqlCommand sqlCommand = new SqlCommand($"getDriverIDbyUserID", sqlConnection);
+                sqlCommand.CommandType = CommandType.StoredProcedure;
+                SqlParameter user_IDParam = new SqlParameter("@user_id", SqlDbType.Int);
+                user_IDParam.Value = user_ID;
+                sqlCommand.Parameters.Add(user_IDParam);
                 SqlDataReader reader = sqlCommand.ExecuteReader();
                 if (reader.Read())
                 {
                     driver_ID = reader.GetInt32(0);
                 }
                 reader.Close();
+                sqlConnection.Close();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
                 return;
             }
-            sqlConnection.Close();
             dateTimePicker1.Format = DateTimePickerFormat.Custom;
             dateTimePicker1.CustomFormat = "yyyy-MM";
             showSchedule();
