@@ -168,7 +168,7 @@
             this.ClientSize = new System.Drawing.Size(1261, 630);
             this.Controls.Add(this.tabControl1);
             this.Name = "SchedulerForm";
-            this.Text = "SchedulerForm";
+            this.Text = "Планировщик";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.SchedulerForm_FormClosed);
             this.Load += new System.EventHandler(this.SchedulerForm_Load);
             this.tabControl1.ResumeLayout(false);

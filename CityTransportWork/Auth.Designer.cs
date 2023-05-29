@@ -103,7 +103,7 @@ namespace CityTransportWork
             this.Controls.Add(this.passwordBox);
             this.Controls.Add(this.loginBox);
             this.Name = "Auth";
-            this.Text = "Auth";
+            this.Text = "Авторизация";
             this.Load += new System.EventHandler(this.Auth_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

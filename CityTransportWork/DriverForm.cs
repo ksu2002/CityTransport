@@ -70,6 +70,7 @@ namespace CityTransportWork
                     DataSet dataSet = new DataSet();
                     dataAdapter.Fill(dataSet);
                     dataGridView1.DataSource = dataSet.Tables[0];
+                    dataGridView1.ClearSelection();
                 }
              
             }

@@ -48,6 +48,7 @@ namespace CityTransportWork
                     DataSet dataSet = new DataSet();
                     dataAdapter.Fill(dataSet);
                     dataGridView1.DataSource = dataSet.Tables[0];
+                    dataGridView1.ClearSelection();
                 }
 
             }
@@ -82,6 +83,7 @@ namespace CityTransportWork
                     DataSet dataSet = new DataSet();
                     dataAdapter.Fill(dataSet);
                     dataGridView2.DataSource = dataSet.Tables[0];
+                    dataGridView2.ClearSelection();
                 }
 
             }
@@ -177,7 +179,7 @@ namespace CityTransportWork
 
         private void dataGridView2_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex >= 0 && e.ColumnIndex >= 0) 
+            if (e.RowIndex >= 0 && e.ColumnIndex == 2) 
             {
                 DataGridViewComboBoxCell cell = new DataGridViewComboBoxCell(); 
                 try

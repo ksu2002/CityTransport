@@ -50,6 +50,7 @@ namespace CityTransportWork
                         dataAdapter2.Fill(dataSet1);
                         dataGridView1.DataSource = dataSet1.Tables[0];
                     }
+                    dataGridView1.ClearSelection();
                 }
 
             }
