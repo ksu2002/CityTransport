@@ -14,10 +14,12 @@ namespace CityTransportWork
 {
     public partial class PassengerForm : Form
     {
-        public PassengerForm()
+        public PassengerForm(Form auth)
         {
+            this.auth = auth;
             InitializeComponent();
         }
+        private Form auth;
         private void ShowRoutes()
         {
             try
@@ -107,6 +109,10 @@ namespace CityTransportWork
             {
                 ShowRoutes();
             }
+        }
+        private void PassengerForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            auth.Show();
         }
     }
 }

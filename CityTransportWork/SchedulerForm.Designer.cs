@@ -80,7 +80,7 @@
             this.button3.TabIndex = 7;
             this.button3.Text = "Изменить";
             this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.button3.Click += new System.EventHandler(this.update_Click);
             // 
             // button2
             // 
@@ -90,7 +90,7 @@
             this.button2.TabIndex = 6;
             this.button2.Text = "Удалить";
             this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click_1);
+            this.button2.Click += new System.EventHandler(this.delete_Click_1);
             // 
             // button4
             // 
@@ -100,7 +100,7 @@
             this.button4.TabIndex = 5;
             this.button4.Text = "Добавить";
             this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
+            this.button4.Click += new System.EventHandler(this.add_Click);
             // 
             // dateTimePicker1
             // 
@@ -169,6 +169,7 @@
             this.Controls.Add(this.tabControl1);
             this.Name = "SchedulerForm";
             this.Text = "SchedulerForm";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.SchedulerForm_FormClosed);
             this.Load += new System.EventHandler(this.SchedulerForm_Load);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);

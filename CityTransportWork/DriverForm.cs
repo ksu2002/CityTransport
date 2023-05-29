@@ -15,13 +15,15 @@ namespace CityTransportWork
     public partial class DriverForm : Form
     {
        
-        public DriverForm()
+        public DriverForm(Form auth)
         {
+            this.auth = auth;
             InitializeComponent();
         }
         public int user_ID;
         private int driver_ID;
-
+        private Form auth;
+        private DateTime date = DateTime.Now;
         private void DriverForm_Load(object sender, EventArgs e)
         {
             try
@@ -56,18 +58,19 @@ namespace CityTransportWork
         }
         private void showSchedule()
         {
-            SqlConnection sqlConnection = new SqlConnection(Program.bld.ConnectionString);
             try
             {
-                string query = ($"SELECT*FROM dbo.TripsForDriverPerDay({driver_ID}, '{date}')");
-                SqlCommand command = new SqlCommand(query, sqlConnection);
-                SqlDataAdapter dataAdapter = new SqlDataAdapter();
-                dataAdapter.SelectCommand = command;
-                DataSet dataSet = new DataSet();
-                sqlConnection.Open();
-                dataAdapter.Fill(dataSet);
-                sqlConnection.Close();
-                dataGridView1.DataSource = dataSet.Tables[0];
+                using (SqlConnection sqlConnection = new SqlConnection(Program.bld.ConnectionString))
+                {
+                    sqlConnection.Open();
+                    string query = ($"SELECT*FROM dbo.TripsForDriverPerDay({driver_ID}, '{date}')");
+                    SqlCommand command = new SqlCommand(query, sqlConnection);
+                    SqlDataAdapter dataAdapter = new SqlDataAdapter();
+                    dataAdapter.SelectCommand = command;
+                    DataSet dataSet = new DataSet();
+                    dataAdapter.Fill(dataSet);
+                    dataGridView1.DataSource = dataSet.Tables[0];
+                }
              
             }
             catch (Exception ex)
@@ -124,7 +127,6 @@ namespace CityTransportWork
 
         }
 
-        private DateTime date = DateTime.Now;
         private void dateTimePicker_ValueChanged(object sender, EventArgs e)
         {
             date = dateTimePicker.Value;
@@ -139,6 +141,10 @@ namespace CityTransportWork
         private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
         {
             showReport();
+        }
+        private void DriverForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            auth.Show();
         }
     }
 }

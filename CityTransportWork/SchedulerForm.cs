@@ -1,24 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
-using System.Drawing;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace CityTransportWork
 {
     public partial class SchedulerForm : Form
     {
-        public SchedulerForm()
+        public SchedulerForm(Form auth)
         {
+            this.auth = auth;
             InitializeComponent();
         }
-
+        private Form auth;
         public int number = -1;
         public string transportTypeName = null;
         public string driverName = null;
@@ -26,6 +20,8 @@ namespace CityTransportWork
         public string direction = null;
         public DateTime dtime;
         public DateTime date;
+        private int rn;
+        private string d, tt, tdt, dn, tn;
         private void button1_Click(object sender, EventArgs e)
         {
         }
@@ -95,7 +91,7 @@ namespace CityTransportWork
                 return;
             }
         }
-        private void button4_Click(object sender, EventArgs e)
+        private void add_Click(object sender, EventArgs e)
         {
             dtime = dateTimePicker1.Value;
             AddTrip addTrip = new AddTrip();
@@ -104,8 +100,6 @@ namespace CityTransportWork
             addTrip.day = dtime.Day;
             addTrip.Show();
             addTrip.Closed += Form2_Closed;
-
-
         }
         private void Form2_Closed(object sender, EventArgs e)
         {
@@ -118,14 +112,6 @@ namespace CityTransportWork
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (dataGridView1.SelectedRows.Count > 0)
-            {
-                DataGridViewRow row = dataGridView1.SelectedRows[0];
-
-                DataGridViewComboBoxCell cell = new DataGridViewComboBoxCell();
-                int rn = Int32.Parse(row.Cells[0].Value.ToString());
-                string d = row.Cells[1].Value.ToString();
-            }
         }
 
         private void dataGridView1_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
@@ -157,7 +143,6 @@ namespace CityTransportWork
                     command1.CommandType = CommandType.StoredProcedure;
                     string r = dataGridView2.Rows[e.RowIndex].Cells[1].Value.ToString();
                     string rr = cell.Value.ToString();
-
                     SqlParameter conditionNameParam = new SqlParameter("@conditionName", SqlDbType.VarChar, 20);
                     conditionNameParam.Value = selectedValue;
                     command1.Parameters.Add(conditionNameParam);
@@ -201,11 +186,9 @@ namespace CityTransportWork
                     {
                         sqlConnection.Open();
                         cell.Items.Clear();                   
-                        SqlCommand command1 = new SqlCommand("dbo.[getConditionName]", sqlConnection);
+                        SqlCommand command1 = new SqlCommand("getConditionName", sqlConnection);
                         command1.CommandType = CommandType.StoredProcedure;
-
                         SqlDataReader reader1 = command1.ExecuteReader();
-
                         while (reader1.Read())
                         {
                             cell.Items.Add(reader1["ConditionName"].ToString());
@@ -225,32 +208,20 @@ namespace CityTransportWork
 
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-
-            if (e.RowIndex >= 0 && e.ColumnIndex >= 0 ) { 
-
-                int rn = Int32.Parse(dataGridView1.Rows[e.RowIndex].Cells[0].Value.ToString());
-                string d = dataGridView1.Rows[e.RowIndex].Cells[1].Value.ToString();
-                string tt = dataGridView1.Rows[e.RowIndex].Cells[2].Value.ToString();
-                string tdt = dataGridView1.Rows[e.RowIndex].Cells[3].Value.ToString();
-                string dn = dataGridView1.Rows[e.RowIndex].Cells[5].Value.ToString();
-                string tn = dataGridView1.Rows[e.RowIndex].Cells[6].Value.ToString();
-
+            if (e.RowIndex >= 0 && e.ColumnIndex >= 0 && e.RowIndex < dataGridView1.Rows.Count-1 ) { 
+                rn = Int32.Parse(dataGridView1.Rows[e.RowIndex].Cells[0].Value.ToString());
+                d = dataGridView1.Rows[e.RowIndex].Cells[1].Value.ToString();
+                tt = dataGridView1.Rows[e.RowIndex].Cells[2].Value.ToString();
+                tdt = dataGridView1.Rows[e.RowIndex].Cells[3].Value.ToString();
+                dn = dataGridView1.Rows[e.RowIndex].Cells[5].Value.ToString();
+                tn = dataGridView1.Rows[e.RowIndex].Cells[6].Value.ToString();
                 dataGridView1.CurrentCell = dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex];
-               
-                    dataGridView1.Rows[e.RowIndex].Selected = true; // подсвечиваем выбранный ряд
-              
+                dataGridView1.Rows[e.RowIndex].Selected = true; 
             }
         }
         private void deleteTrip()
         {
             DataGridViewComboBoxCell cell = new DataGridViewComboBoxCell();
-            int rn = Int32.Parse(dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[0].Value.ToString());
-            string d = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[1].Value.ToString();
-            string tt = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[2].Value.ToString();
-            string tdt = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[3].Value.ToString();
-            string dn = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[5].Value.ToString();
-            string tn = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[6].Value.ToString();
-            
             try
             {
                 using (SqlConnection sqlConnection = new SqlConnection(Program.bld.ConnectionString))
@@ -285,13 +256,18 @@ namespace CityTransportWork
                 return;
             }
         }
-        private void button2_Click_1(object sender, EventArgs e)
+        private void delete_Click_1(object sender, EventArgs e)
         {
             deleteTrip();
             dtime = dateTimePicker1.Value.Date;
             showSchedule();
         }
-        private void button3_Click(object sender, EventArgs e)
+
+        private void SchedulerForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            auth.Show();
+        }
+        private void update_Click(object sender, EventArgs e)
         {
             try
             {
@@ -299,15 +275,7 @@ namespace CityTransportWork
                 {
                     sqlConnection.Open();
                     DataGridViewComboBoxCell cell = new DataGridViewComboBoxCell();
-                    int rn = Int32.Parse(dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[0].Value.ToString());
-                    string d = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[1].Value.ToString();
-                    string tt = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[2].Value.ToString();
-                    string tdt = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[3].Value.ToString();
-                    string dn = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[5].Value.ToString();
-                    string tn = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[6].Value.ToString();
-
                     AddTrip addTrip = new AddTrip();
-
                     addTrip.number = rn;
                     addTrip.transportTypeName = tt;
                     addTrip.depTime = tdt;
@@ -318,7 +286,7 @@ namespace CityTransportWork
                     addTrip.year = dtime.Year;
                     addTrip.month = dtime.Month;
                     addTrip.day = dtime.Day;
-                    addTrip.update = 1;
+                    addTrip.update = true;
                     deleteTrip();
                     addTrip.Show();
                     addTrip.Closed += Form2_Closed;

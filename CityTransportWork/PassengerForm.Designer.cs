@@ -101,6 +101,7 @@
             this.Controls.Add(this.dataGridView1);
             this.Name = "PassengerForm";
             this.Text = "Пассажир";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.PassengerForm_FormClosed);
             this.Load += new System.EventHandler(this.PassengerForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);

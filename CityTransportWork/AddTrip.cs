@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
-using System.Drawing;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace CityTransportWork
@@ -22,7 +16,16 @@ namespace CityTransportWork
         public int month;
         public int day;
         private DateTime dtime;
-        public int update = 3;
+        public bool update = false;
+        public int number = -1;
+        public string transportTypeName;
+        public string driverName;
+        public string carName;
+        public string direction;
+        public string depTime; 
+        private int oldNumber;
+        private string oldTransportTypeName, oldDriverName,oldCarName,oldDirection, oldDepTime;
+
      
         private void label1_Click(object sender, EventArgs e)
         {
@@ -35,7 +38,6 @@ namespace CityTransportWork
                 using (SqlConnection sqlConnection = new SqlConnection(Program.bld.ConnectionString))
                 {
                     sqlConnection.Open();
-
                     number = Int32.Parse(routeNumber.SelectedItem.ToString());
                     SqlCommand command = new SqlCommand("dbo.[getTransportTypeName]", sqlConnection);
                     command.CommandType = CommandType.StoredProcedure;
@@ -63,11 +65,9 @@ namespace CityTransportWork
                 using (SqlConnection sqlConnection = new SqlConnection(Program.bld.ConnectionString))
                 {
                     sqlConnection.Open();
-
                     SqlCommand command1 = new SqlCommand("getRouteNumber", sqlConnection);
                     command1.CommandType = CommandType.StoredProcedure;
                     SqlDataReader reader1 = command1.ExecuteReader();
-
                     while (reader1.Read())
                     {
                         routeNumber.Items.Add(reader1["RouteNumber"].ToString());
@@ -88,10 +88,8 @@ namespace CityTransportWork
                 using (SqlConnection sqlConnection = new SqlConnection(Program.bld.ConnectionString))
                 {
                     sqlConnection.Open();
-
                     SqlCommand command = new SqlCommand("getFreeDrivers", sqlConnection);
                     command.CommandType = CommandType.StoredProcedure;
-
                     SqlParameter dataParam = new SqlParameter("@data", SqlDbType.DateTime);
                     dataParam.Value = dtime;
                     command.Parameters.Add(dataParam);
@@ -105,7 +103,6 @@ namespace CityTransportWork
                     routeNameParam.Value = direction;
                     command.Parameters.Add(routeNameParam);
                     SqlDataReader reader = command.ExecuteReader();
-
                     while (reader.Read())
                     {
                         driver.Items.Add(reader["FIO"].ToString());
@@ -128,7 +125,6 @@ namespace CityTransportWork
                     sqlConnection.Open();
                     SqlCommand command = new SqlCommand("dbo.getFreeCars", sqlConnection);
                     command.CommandType = CommandType.StoredProcedure;
-
                     SqlParameter dataParam = new SqlParameter("@data", SqlDbType.DateTime);
                     dataParam.Value = dtime;
                     command.Parameters.Add(dataParam);
@@ -142,7 +138,6 @@ namespace CityTransportWork
                     routeNameParam.Value = direction;
                     command.Parameters.Add(routeNameParam);
                     SqlDataReader reader = command.ExecuteReader();
-
                     while (reader.Read())
                     {
                         car.Items.Add(reader["TransportNumber"].ToString());
@@ -159,7 +154,7 @@ namespace CityTransportWork
         }
         private void getCarAndDrivers()
         {
-            if (update == 1)
+            if (update)
             {
                 for (int i = 0; i < dir.Items.Count; i++)
                     if (dir.Items[i].ToString() == direction)
@@ -167,7 +162,6 @@ namespace CityTransportWork
                 dtime = dateTimePicker1.Value;
                 driver.Items.Clear();
                 getDrivers();
-
                 for (int i = 0; i < driver.Items.Count; i++)
                     if (driver.Items[i].ToString() == driverName)
                         driver.SelectedIndex = i;
@@ -176,12 +170,9 @@ namespace CityTransportWork
                 for (int i = 0; i < car.Items.Count; i++)
                     if (car.Items[i].ToString() == carName)
                         car.SelectedIndex = i;
-
-
             }
             else
             {
-
                 car.SelectedItem = null;
                 car.Items.Clear();
                 driver.SelectedItem = null;
@@ -228,13 +219,11 @@ namespace CityTransportWork
            getCarAndDrivers();
 
         }
-        private int oldNumber;
-        private string oldTransportTypeName, oldDriverName,oldCarName,oldDirection, oldDepTime;
         private void AddTrip_Load(object sender, EventArgs e)
         {
             dateTimePicker1.Value = new DateTime(year, month, day); 
             getRouteNumber();
-            if (update == 1)
+            if (update)
             {
                 oldNumber = number;
                 oldTransportTypeName = transportTypeName;   
@@ -249,24 +238,13 @@ namespace CityTransportWork
 
                try {
                     dateTimePicker1.Value = DateTime.ParseExact(depTime, "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture); 
-                  update = 2;
                 }
                catch { 
                     dateTimePicker1.Value = DateTime.ParseExact(depTime, "dd.MM.yyyy H:mm:ss", CultureInfo.InvariantCulture);
-                    update = 2;
                 }
-              
-
             }
            
         }
-        public int number = -1;
-        public string transportTypeName;
-        public string driverName;
-        public string carName;
-        public string direction;
-        public string depTime; 
-
 
         private void routeNumber_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -275,7 +253,7 @@ namespace CityTransportWork
             dir.SelectedItem = null;
             dir.Items.Clear();
             getTransportType();
-            if (update == 1)
+            if (update)
             {
                 for (int i = 0; i < transportType.Items.Count; i++)
                     if (transportType.Items[i].ToString() == transportTypeName)
@@ -296,21 +274,20 @@ namespace CityTransportWork
             if (transportType.SelectedIndex != -1)
                 {
                     getDirection();
+                if (update)
+                {
+                    for (int i = 0; i < dir.Items.Count; i++)
+                        if (dir.Items[i].ToString() == direction)
+                            dir.SelectedIndex = i;
+                }
+                else
+                {
 
-                
-            if ( update==1)
-            {
-                for (int i = 0; i < dir.Items.Count; i++)
-                    if (dir.Items[i].ToString() == direction)
-                        dir.SelectedIndex = i;
-            }
-            else {
-
-                driver.SelectedItem = null;
-                driver.Items.Clear();
-                car.SelectedItem = null;
-            car.Items.Clear();
-            }
+                    driver.SelectedItem = null;
+                    driver.Items.Clear();
+                    car.SelectedItem = null;
+                    car.Items.Clear();
+                }
             }
         }
 
@@ -331,7 +308,7 @@ namespace CityTransportWork
 
                 try
                 {
-                 using (SqlConnection sqlConnection = new SqlConnection(Program.bld.ConnectionString))
+                    using (SqlConnection sqlConnection = new SqlConnection(Program.bld.ConnectionString))
                     {
                         sqlConnection.Open();
                         SqlCommand command = new SqlCommand("getRouteInfo", sqlConnection);
@@ -367,17 +344,13 @@ namespace CityTransportWork
                         SqlParameter transportIdParam = new SqlParameter("@transportid", SqlDbType.Int);
                         transportIdParam.Direction = ParameterDirection.Output;
                         command.Parameters.Add(transportIdParam);
-
                         command.ExecuteNonQuery();
 
                         int routeId = (int)routeIdParam.Value;
                         int driverId = (int)driverIdParam.Value;
                         int transportId = (int)transportIdParam.Value;
 
-
-
                         SqlCommand cmd = new SqlCommand("insertTrip", sqlConnection);
-
                         cmd.CommandType = CommandType.StoredProcedure;
                         SqlParameter depTimeParam = new SqlParameter("@depTime", SqlDbType.DateTime);
                         depTimeParam.Value = dtime;
@@ -392,7 +365,6 @@ namespace CityTransportWork
                         transportidParam.Value = transportId;
                         cmd.Parameters.Add(transportidParam);
                         cmd.ExecuteNonQuery();
-                        update = 4;
                     }
                 }
 
@@ -400,10 +372,8 @@ namespace CityTransportWork
                 {
                     MessageBox.Show(ex.Message);
                     return;
-
-
                 }
-
+                update = false;
                 this.Close();
             }
             else
@@ -430,9 +400,8 @@ namespace CityTransportWork
         {
             if (e.CloseReason == CloseReason.UserClosing)
             {
-                if(update == 2)
+                if(update)
                 {
-                   
                     number = oldNumber;
                     driverName = oldDriverName;
                     transportTypeName = oldTransportTypeName;

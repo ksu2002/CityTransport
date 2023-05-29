@@ -121,7 +121,7 @@
             this.reportPage.Location = new System.Drawing.Point(4, 25);
             this.reportPage.Name = "reportPage";
             this.reportPage.Padding = new System.Windows.Forms.Padding(3);
-            this.reportPage.Size = new System.Drawing.Size(1118, 502);
+            this.reportPage.Size = new System.Drawing.Size(1118, 396);
             this.reportPage.TabIndex = 1;
             this.reportPage.Text = "Отчёт";
             this.reportPage.UseVisualStyleBackColor = true;
@@ -207,6 +207,7 @@
             this.Controls.Add(this.schedule);
             this.Name = "DriverForm";
             this.Text = "Водитель";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.DriverForm_FormClosed);
             this.Load += new System.EventHandler(this.DriverForm_Load);
             this.schedule.ResumeLayout(false);
             this.schedulePage.ResumeLayout(false);
