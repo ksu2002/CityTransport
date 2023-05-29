@@ -20,35 +20,35 @@ namespace CityTransportWork
         }
         private void ShowRoutes()
         {
-            string connectionString = ConfigurationManager.ConnectionStrings["bdConnectionString"].ConnectionString;
-            SqlConnection sqlConnection = new SqlConnection(connectionString);
             try
             {
-                string stop1name = stop1.SelectedItem.ToString();
-                string stop2name = stop2.SelectedItem.ToString();
-
-                string query1 = ($"SELECT*FROM dbo.RoutsFromStop1ToStop2({"'" + stop1name + "'"}, {"'" + stop2name + "'"})");
-                SqlCommand command1 = new SqlCommand(query1, sqlConnection);
-                SqlDataAdapter dataAdapter1 = new SqlDataAdapter();
-                dataAdapter1.SelectCommand = command1;
-
-                DataSet dataSet = new DataSet();
-                int check = dataAdapter1.Fill(dataSet);
-                if (check != 0)
+                using (SqlConnection sqlConnection = new SqlConnection(Program.bld.ConnectionString))
                 {
-                    dataGridView1.DataSource = dataSet.Tables[0];
+                    sqlConnection.Open();
+                    string stop1name = stop1.SelectedItem.ToString();
+                    string stop2name = stop2.SelectedItem.ToString();
+                    string query1 = ($"SELECT*FROM dbo.RoutsFromStop1ToStop2({"'" + stop1name + "'"}, {"'" + stop2name + "'"})");
+                    SqlCommand command1 = new SqlCommand(query1, sqlConnection);
+                    SqlDataAdapter dataAdapter1 = new SqlDataAdapter();
+                    dataAdapter1.SelectCommand = command1;
+
+                    DataSet dataSet = new DataSet();
+                    int check = dataAdapter1.Fill(dataSet);
+                    if (check != 0)
+                    {
+                        dataGridView1.DataSource = dataSet.Tables[0];
+                    }
+                    else
+                    {
+                        string query2 = ($"SELECT*FROM dbo.TransferFromStop1ToStop2({"'" + stop1name + "'"}, {"'" + stop2name + "'"})");
+                        SqlCommand command2 = new SqlCommand(query2, sqlConnection);
+                        SqlDataAdapter dataAdapter2 = new SqlDataAdapter();
+                        dataAdapter2.SelectCommand = command2;
+                        DataSet dataSet1 = new DataSet();
+                        dataAdapter2.Fill(dataSet1);
+                        dataGridView1.DataSource = dataSet1.Tables[0];
+                    }
                 }
-                else
-                {
-                    string query2 = ($"SELECT*FROM dbo.TransferFromStop1ToStop2({"'" + stop1name + "'"}, {"'" + stop2name + "'"})");
-                    SqlCommand command2 = new SqlCommand(query2, sqlConnection);
-                    SqlDataAdapter dataAdapter2 = new SqlDataAdapter();
-                    dataAdapter2.SelectCommand = command2;
-                    DataSet dataSet1 = new DataSet();
-                    dataAdapter2.Fill(dataSet1);
-                    dataGridView1.DataSource = dataSet1.Tables[0];
-                }
-                sqlConnection.Close();
 
             }
             catch (Exception ex)
@@ -59,29 +59,28 @@ namespace CityTransportWork
         }
         private void PassengerForm_Load(object sender, EventArgs e)
         {
-            string connectionString = ConfigurationManager.ConnectionStrings["bdConnectionString"].ConnectionString;
-            SqlConnection sqlConnection = new SqlConnection(connectionString);
-            sqlConnection.Open();
-
             try
             {
-               
-                SqlCommand sqlCommand1 = new SqlCommand($"dbo.[getStopName]", sqlConnection);
-                SqlDataReader reader1 = sqlCommand1.ExecuteReader();
-                while (reader1.Read())
+                using (SqlConnection sqlConnection = new SqlConnection(Program.bld.ConnectionString))
                 {
-                    stop1.Items.Add(reader1.GetString(0));
-                }
-                reader1.Close();
-                SqlCommand sqlCommand2 = new SqlCommand($"dbo.[getStopName]", sqlConnection);
-                SqlDataReader reader2 = sqlCommand2.ExecuteReader();
-                while (reader2.Read())
-                {
-                    stop2.Items.Add(reader2.GetString(0));
-                }
+                    sqlConnection.Open();
 
-                reader2.Close();
-                sqlConnection.Close();
+                    SqlCommand sqlCommand1 = new SqlCommand($"dbo.[getStopName]", sqlConnection);
+                    SqlDataReader reader1 = sqlCommand1.ExecuteReader();
+                    while (reader1.Read())
+                    {
+                        stop1.Items.Add(reader1.GetString(0));
+                    }
+                    reader1.Close();
+                    SqlCommand sqlCommand2 = new SqlCommand($"dbo.[getStopName]", sqlConnection);
+                    SqlDataReader reader2 = sqlCommand2.ExecuteReader();
+                    while (reader2.Read())
+                    {
+                        stop2.Items.Add(reader2.GetString(0));
+                    }
+
+                    reader2.Close();
+                }
             }
             catch (Exception ex)
             {

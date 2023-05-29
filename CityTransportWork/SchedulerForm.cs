@@ -40,21 +40,19 @@ namespace CityTransportWork
 
         private void showSchedule()
         {
-            string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["bdConnectionString"].ConnectionString;
-            SqlConnection sqlConnection = new SqlConnection(connectionString);
-
             try
             {
-               
-                sqlConnection.Open();
-                string query = ($"SELECT*FROM dbo.DaySchedule('{dtime}')");
-                SqlCommand command = new SqlCommand(query, sqlConnection);
-                SqlDataAdapter dataAdapter = new SqlDataAdapter();
-                dataAdapter.SelectCommand = command;
-                DataSet dataSet = new DataSet();
-                dataAdapter.Fill(dataSet);
-                dataGridView1.DataSource = dataSet.Tables[0];
-                sqlConnection.Close();
+                using (SqlConnection sqlConnection = new SqlConnection(Program.bld.ConnectionString))
+                {
+                    sqlConnection.Open();
+                    string query = ($"SELECT*FROM dbo.DaySchedule('{dtime}')");
+                    SqlCommand command = new SqlCommand(query, sqlConnection);
+                    SqlDataAdapter dataAdapter = new SqlDataAdapter();
+                    dataAdapter.SelectCommand = command;
+                    DataSet dataSet = new DataSet();
+                    dataAdapter.Fill(dataSet);
+                    dataGridView1.DataSource = dataSet.Tables[0];
+                }
 
             }
             catch (Exception ex)
@@ -78,18 +76,17 @@ namespace CityTransportWork
         {
             try
             {
-                string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["bdConnectionString"].ConnectionString;
-
-                SqlConnection sqlConnection = new SqlConnection(connectionString);
-                sqlConnection.Open();
-                string query = ($"select* from [dbo].[HistoryCondition]('{date.Date}')");
-                SqlCommand command = new SqlCommand(query, sqlConnection);
-                SqlDataAdapter dataAdapter = new SqlDataAdapter();
-                dataAdapter.SelectCommand = command;
-                DataSet dataSet = new DataSet();
-                dataAdapter.Fill(dataSet);
-                dataGridView2.DataSource = dataSet.Tables[0];
-                sqlConnection.Close();
+                using (SqlConnection sqlConnection = new SqlConnection(Program.bld.ConnectionString))
+                {
+                    sqlConnection.Open();
+                    string query = ($"select* from [dbo].[HistoryCondition]('{date.Date}')");
+                    SqlCommand command = new SqlCommand(query, sqlConnection);
+                    SqlDataAdapter dataAdapter = new SqlDataAdapter();
+                    dataAdapter.SelectCommand = command;
+                    DataSet dataSet = new DataSet();
+                    dataAdapter.Fill(dataSet);
+                    dataGridView2.DataSource = dataSet.Tables[0];
+                }
 
             }
             catch (Exception ex)
@@ -151,29 +148,28 @@ namespace CityTransportWork
         {
             DataGridViewCell cell = dataGridView2.CurrentCell; 
             string selectedValue = cell.Value.ToString();
-            string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["bdConnectionString"].ConnectionString;
-
-            SqlConnection sqlConnection = new SqlConnection(connectionString);
-            sqlConnection.Open();
             try
             {
-                SqlCommand command1 = new SqlCommand("UpdateConditionHistory", sqlConnection);
-                command1.CommandType = CommandType.StoredProcedure;
-                string r = dataGridView2.Rows[e.RowIndex].Cells[1].Value.ToString();
-                string rr = cell.Value.ToString();
+                using (SqlConnection sqlConnection = new SqlConnection(Program.bld.ConnectionString))
+                {
+                    sqlConnection.Open();
+                    SqlCommand command1 = new SqlCommand("UpdateConditionHistory", sqlConnection);
+                    command1.CommandType = CommandType.StoredProcedure;
+                    string r = dataGridView2.Rows[e.RowIndex].Cells[1].Value.ToString();
+                    string rr = cell.Value.ToString();
 
-                SqlParameter conditionNameParam = new SqlParameter("@conditionName", SqlDbType.VarChar, 20);
-                conditionNameParam.Value = selectedValue;
-                command1.Parameters.Add(conditionNameParam);
-                SqlParameter transportNumberParam = new SqlParameter("@transportNumber", SqlDbType.VarChar, 6);
-                transportNumberParam.Value = r;
-                command1.Parameters.Add(transportNumberParam);
-                SqlParameter conditionDateParam = new SqlParameter("@conditionDate", SqlDbType.Date);
-                conditionDateParam.Value = date.Date;
-                command1.Parameters.Add(conditionDateParam);
-                command1.CommandType = CommandType.StoredProcedure;
-                command1.ExecuteNonQuery();
-                sqlConnection.Close();
+                    SqlParameter conditionNameParam = new SqlParameter("@conditionName", SqlDbType.VarChar, 20);
+                    conditionNameParam.Value = selectedValue;
+                    command1.Parameters.Add(conditionNameParam);
+                    SqlParameter transportNumberParam = new SqlParameter("@transportNumber", SqlDbType.VarChar, 6);
+                    transportNumberParam.Value = r;
+                    command1.Parameters.Add(transportNumberParam);
+                    SqlParameter conditionDateParam = new SqlParameter("@conditionDate", SqlDbType.Date);
+                    conditionDateParam.Value = date.Date;
+                    command1.Parameters.Add(conditionDateParam);
+                    command1.CommandType = CommandType.StoredProcedure;
+                    command1.ExecuteNonQuery();
+                }
 
             }
             catch (Exception ex)
@@ -201,23 +197,21 @@ namespace CityTransportWork
                 DataGridViewComboBoxCell cell = new DataGridViewComboBoxCell(); 
                 try
                 {
-                    cell.Items.Clear();
-                    string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["bdConnectionString"].ConnectionString;
-                    SqlConnection sqlConnection = new SqlConnection(connectionString);
-                    sqlConnection.Open();
-
-                    SqlCommand command1 = new SqlCommand("dbo.[getConditionName]", sqlConnection);
-                    command1.CommandType = CommandType.StoredProcedure;
-
-                    SqlDataReader reader1 = command1.ExecuteReader();
-
-                    while (reader1.Read())
+                    using (SqlConnection sqlConnection = new SqlConnection(Program.bld.ConnectionString))
                     {
-                        cell.Items.Add(reader1["ConditionName"].ToString());
-                    }
-                    reader1.Close();
+                        sqlConnection.Open();
+                        cell.Items.Clear();                   
+                        SqlCommand command1 = new SqlCommand("dbo.[getConditionName]", sqlConnection);
+                        command1.CommandType = CommandType.StoredProcedure;
 
-                    sqlConnection.Close();
+                        SqlDataReader reader1 = command1.ExecuteReader();
+
+                        while (reader1.Read())
+                        {
+                            cell.Items.Add(reader1["ConditionName"].ToString());
+                        }
+                        reader1.Close();
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -249,8 +243,6 @@ namespace CityTransportWork
         }
         private void deleteTrip()
         {
-            string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["bdConnectionString"].ConnectionString;
-
             DataGridViewComboBoxCell cell = new DataGridViewComboBoxCell();
             int rn = Int32.Parse(dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[0].Value.ToString());
             string d = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[1].Value.ToString();
@@ -258,38 +250,40 @@ namespace CityTransportWork
             string tdt = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[3].Value.ToString();
             string dn = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[5].Value.ToString();
             string tn = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[6].Value.ToString();
-            SqlConnection sqlConnection = new SqlConnection(connectionString);
-            sqlConnection.Open();
+            
             try
             {
-                SqlCommand command = new SqlCommand("DeleteTrip", sqlConnection);
-                command.CommandType = CommandType.StoredProcedure;
-                SqlParameter routeNumberParam = new SqlParameter("@RouteNumber", SqlDbType.Int);
-                routeNumberParam.Value = rn;
-                command.Parameters.Add(routeNumberParam);
-                SqlParameter dirParam = new SqlParameter("@Dir", SqlDbType.VarChar, 41);
-                dirParam.Value = d;
-                command.Parameters.Add(dirParam);
-                SqlParameter transportTypeParam = new SqlParameter("@TransportType", SqlDbType.VarChar, 10);
-                transportTypeParam.Value = tt;
-                command.Parameters.Add(transportTypeParam);
-                SqlParameter tripDepartureTimeParam = new SqlParameter("@TripDepartureTime", SqlDbType.DateTime);
-                tripDepartureTimeParam.Value = tdt;
-                command.Parameters.Add(tripDepartureTimeParam);
-                SqlParameter driverNameParam = new SqlParameter("@DriverName", SqlDbType.VarChar, 40);
-                driverNameParam.Value = dn;
-                command.Parameters.Add(driverNameParam);
-                SqlParameter transportNumberParam = new SqlParameter("@TransportNumber", SqlDbType.VarChar, 6);
-                transportNumberParam.Value = tn;
-                command.Parameters.Add(transportNumberParam);
-                command.ExecuteNonQuery();
+                using (SqlConnection sqlConnection = new SqlConnection(Program.bld.ConnectionString))
+                {
+                    sqlConnection.Open();
+                    SqlCommand command = new SqlCommand("DeleteTrip", sqlConnection);
+                    command.CommandType = CommandType.StoredProcedure;
+                    SqlParameter routeNumberParam = new SqlParameter("@RouteNumber", SqlDbType.Int);
+                    routeNumberParam.Value = rn;
+                    command.Parameters.Add(routeNumberParam);
+                    SqlParameter dirParam = new SqlParameter("@Dir", SqlDbType.VarChar, 41);
+                    dirParam.Value = d;
+                    command.Parameters.Add(dirParam);
+                    SqlParameter transportTypeParam = new SqlParameter("@TransportType", SqlDbType.VarChar, 10);
+                    transportTypeParam.Value = tt;
+                    command.Parameters.Add(transportTypeParam);
+                    SqlParameter tripDepartureTimeParam = new SqlParameter("@TripDepartureTime", SqlDbType.DateTime);
+                    tripDepartureTimeParam.Value = tdt;
+                    command.Parameters.Add(tripDepartureTimeParam);
+                    SqlParameter driverNameParam = new SqlParameter("@DriverName", SqlDbType.VarChar, 40);
+                    driverNameParam.Value = dn;
+                    command.Parameters.Add(driverNameParam);
+                    SqlParameter transportNumberParam = new SqlParameter("@TransportNumber", SqlDbType.VarChar, 6);
+                    transportNumberParam.Value = tn;
+                    command.Parameters.Add(transportNumberParam);
+                    command.ExecuteNonQuery();
+                }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
                 return;
             }
-            sqlConnection.Close();
         }
         private void button2_Click_1(object sender, EventArgs e)
         {
@@ -301,34 +295,34 @@ namespace CityTransportWork
         {
             try
             {
-                string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["bdConnectionString"].ConnectionString;
-                DataGridViewComboBoxCell cell = new DataGridViewComboBoxCell();
+                using (SqlConnection sqlConnection = new SqlConnection(Program.bld.ConnectionString))
+                {
+                    sqlConnection.Open();
+                    DataGridViewComboBoxCell cell = new DataGridViewComboBoxCell();
+                    int rn = Int32.Parse(dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[0].Value.ToString());
+                    string d = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[1].Value.ToString();
+                    string tt = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[2].Value.ToString();
+                    string tdt = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[3].Value.ToString();
+                    string dn = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[5].Value.ToString();
+                    string tn = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[6].Value.ToString();
 
+                    AddTrip addTrip = new AddTrip();
 
-                int rn = Int32.Parse(dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[0].Value.ToString());
-                string d = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[1].Value.ToString();
-                string tt = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[2].Value.ToString();
-                string tdt = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[3].Value.ToString();
-                string dn = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[5].Value.ToString();
-                string tn = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[6].Value.ToString();
-
-                AddTrip addTrip = new AddTrip();
-
-                addTrip.number = rn;
-                addTrip.transportTypeName = tt;
-                addTrip.depTime = tdt;
-                addTrip.direction = d;
-                addTrip.driverName = dn;
-                addTrip.carName = tn;
-                dtime = dateTimePicker1.Value;
-                addTrip.year = dtime.Year;
-                addTrip.month = dtime.Month;
-                addTrip.day = dtime.Day;
-                addTrip.update = 1;
-                deleteTrip();
-                addTrip.Show();
-               
-                addTrip.Closed += Form2_Closed;
+                    addTrip.number = rn;
+                    addTrip.transportTypeName = tt;
+                    addTrip.depTime = tdt;
+                    addTrip.direction = d;
+                    addTrip.driverName = dn;
+                    addTrip.carName = tn;
+                    dtime = dateTimePicker1.Value;
+                    addTrip.year = dtime.Year;
+                    addTrip.month = dtime.Month;
+                    addTrip.day = dtime.Day;
+                    addTrip.update = 1;
+                    deleteTrip();
+                    addTrip.Show();
+                    addTrip.Closed += Form2_Closed;
+                }
             }
 
             catch (Exception ex)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -12,6 +13,9 @@ namespace CityTransportWork
         /// <summary>
         /// Главная точка входа для приложения.
         /// </summary>
+        /// 
+        public static SqlConnectionStringBuilder bld = new SqlConnectionStringBuilder();
+        public static int user_ID;
         [STAThread]
         static void Main()
         {

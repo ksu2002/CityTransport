@@ -24,24 +24,23 @@ namespace CityTransportWork
 
         private void DriverForm_Load(object sender, EventArgs e)
         {
-            string connectionString = ConfigurationManager.ConnectionStrings["bdConnectionString"].ConnectionString;
-            SqlConnection sqlConnection = new SqlConnection(connectionString);
-
             try
             {
-                sqlConnection.Open();
-                SqlCommand sqlCommand = new SqlCommand($"getDriverIDbyUserID", sqlConnection);
-                sqlCommand.CommandType = CommandType.StoredProcedure;
-                SqlParameter user_IDParam = new SqlParameter("@user_id", SqlDbType.Int);
-                user_IDParam.Value = user_ID;
-                sqlCommand.Parameters.Add(user_IDParam);
-                SqlDataReader reader = sqlCommand.ExecuteReader();
-                if (reader.Read())
+                using (SqlConnection sqlConnection = new SqlConnection(Program.bld.ConnectionString))
                 {
-                    driver_ID = reader.GetInt32(0);
+                    sqlConnection.Open();
+                    SqlCommand sqlCommand = new SqlCommand($"getDriverIDbyUserID", sqlConnection);
+                    sqlCommand.CommandType = CommandType.StoredProcedure;
+                    SqlParameter user_IDParam = new SqlParameter("@user_id", SqlDbType.Int);
+                    user_IDParam.Value = user_ID;
+                    sqlCommand.Parameters.Add(user_IDParam);
+                    SqlDataReader reader = sqlCommand.ExecuteReader();
+                    if (reader.Read())
+                    {
+                        driver_ID = reader.GetInt32(0);
+                    }
+                    reader.Close();
                 }
-                reader.Close();
-                sqlConnection.Close();
             }
             catch (Exception ex)
             {
@@ -57,9 +56,7 @@ namespace CityTransportWork
         }
         private void showSchedule()
         {
-
-            string connectionString = ConfigurationManager.ConnectionStrings["bdConnectionString"].ConnectionString;
-            SqlConnection sqlConnection = new SqlConnection(connectionString);
+            SqlConnection sqlConnection = new SqlConnection(Program.bld.ConnectionString);
             try
             {
                 string query = ($"SELECT*FROM dbo.TripsForDriverPerDay({driver_ID}, '{date}')");
@@ -82,35 +79,33 @@ namespace CityTransportWork
         private void showReport()
         {
             date = dateTimePicker1.Value;
-            string connectionString = ConfigurationManager.ConnectionStrings["bdConnectionString"].ConnectionString;
-            SqlConnection sqlConnection = new SqlConnection(connectionString);
             try
             {
-                string query = ($"SELECT*FROM dbo.MonthlyReport({driver_ID}, {Int32.Parse(date.Year.ToString())},{Int32.Parse(date.Month.ToString())})");
-                SqlCommand command = new SqlCommand(query, sqlConnection);
-                SqlDataAdapter dataAdapter = new SqlDataAdapter();
-                dataAdapter.SelectCommand = command;
-
-                DataSet dataSet = new DataSet();
-                sqlConnection.Open();
-                dataAdapter.Fill(dataSet);
-                sqlConnection.Close();
-                FIO.Text = dataSet.Tables[0].Rows[0].ItemArray[0].ToString();
-                if (dataSet.Tables[0].Rows[0].ItemArray[1].ToString() != "")
+                using (SqlConnection sqlConnection = new SqlConnection(Program.bld.ConnectionString))
                 {
-                    string r = dataSet.Tables[0].Rows[0].ItemArray[1].ToString();
-                    trips.Text = dataSet.Tables[0].Rows[0].ItemArray[1].ToString();
-                    time.Text = dataSet.Tables[0].Rows[0].ItemArray[2].ToString();
-                    money.Text = dataSet.Tables[0].Rows[0].ItemArray[3].ToString();
+                    sqlConnection.Open();
+                    string query = ($"SELECT*FROM dbo.MonthlyReport({driver_ID}, {Int32.Parse(date.Year.ToString())},{Int32.Parse(date.Month.ToString())})");
+                    SqlCommand command = new SqlCommand(query, sqlConnection);
+                    SqlDataAdapter dataAdapter = new SqlDataAdapter();
+                    dataAdapter.SelectCommand = command;
+                    DataSet dataSet = new DataSet();
+                    dataAdapter.Fill(dataSet);
+                    FIO.Text = dataSet.Tables[0].Rows[0].ItemArray[0].ToString();
+                    if (dataSet.Tables[0].Rows[0].ItemArray[1].ToString() != "")
+                    {
+                        string r = dataSet.Tables[0].Rows[0].ItemArray[1].ToString();
+                        trips.Text = dataSet.Tables[0].Rows[0].ItemArray[1].ToString();
+                        time.Text = dataSet.Tables[0].Rows[0].ItemArray[2].ToString();
+                        money.Text = dataSet.Tables[0].Rows[0].ItemArray[3].ToString();
+                    }
+                    else
+                    {
+                        trips.Text = "0";
+                        time.Text = "0";
+                        money.Text = "0";
+                    }
+                    label1.Text = FIO.Text;
                 }
-                else
-                {
-                    trips.Text = "0";
-                    time.Text = "0";
-                    money.Text = "0";
-                }
-                label1.Text = FIO.Text;
-
             }
             catch (Exception ex)
             {

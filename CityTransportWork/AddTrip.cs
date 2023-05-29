@@ -30,25 +30,25 @@ namespace CityTransportWork
         }
         private void getTransportType()
         {
-            SqlConnection sqlConnection = new SqlConnection(connectionString);
-            sqlConnection.Open();
-
             try
             {
-                number = Int32.Parse(routeNumber.SelectedItem.ToString());
-                SqlCommand command = new SqlCommand("dbo.[getTransportTypeName]", sqlConnection);
-                command.CommandType = CommandType.StoredProcedure;
-                SqlParameter numberParam = new SqlParameter("@number", SqlDbType.Int);
-                numberParam.Value = number;
-                command.Parameters.Add(numberParam);
-                SqlDataReader reader1 = command.ExecuteReader();
-                while (reader1.Read())
+                using (SqlConnection sqlConnection = new SqlConnection(Program.bld.ConnectionString))
                 {
-                    transportType.Items.Add(reader1["TransportTypeName"].ToString());
-                }
-                reader1.Close();
+                    sqlConnection.Open();
 
-                sqlConnection.Close();
+                    number = Int32.Parse(routeNumber.SelectedItem.ToString());
+                    SqlCommand command = new SqlCommand("dbo.[getTransportTypeName]", sqlConnection);
+                    command.CommandType = CommandType.StoredProcedure;
+                    SqlParameter numberParam = new SqlParameter("@number", SqlDbType.Int);
+                    numberParam.Value = number;
+                    command.Parameters.Add(numberParam);
+                    SqlDataReader reader1 = command.ExecuteReader();
+                    while (reader1.Read())
+                    {
+                        transportType.Items.Add(reader1["TransportTypeName"].ToString());
+                    }
+                    reader1.Close();
+                }
             }
             catch (Exception ex)
             {
@@ -58,23 +58,22 @@ namespace CityTransportWork
         }
 
         private void getRouteNumber() {
-            SqlConnection sqlConnection = new SqlConnection(connectionString);
-            sqlConnection.Open();
-
             try
             {
-
-                SqlCommand command1 = new SqlCommand("getRouteNumber", sqlConnection);
-                command1.CommandType = CommandType.StoredProcedure;
-                SqlDataReader reader1 = command1.ExecuteReader();
-
-                while (reader1.Read())
+                using (SqlConnection sqlConnection = new SqlConnection(Program.bld.ConnectionString))
                 {
-                    routeNumber.Items.Add(reader1["RouteNumber"].ToString());
-                }
-                reader1.Close();
+                    sqlConnection.Open();
 
-                sqlConnection.Close();
+                    SqlCommand command1 = new SqlCommand("getRouteNumber", sqlConnection);
+                    command1.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader reader1 = command1.ExecuteReader();
+
+                    while (reader1.Read())
+                    {
+                        routeNumber.Items.Add(reader1["RouteNumber"].ToString());
+                    }
+                    reader1.Close();
+                }
             }
             catch (Exception ex)
             {
@@ -84,34 +83,35 @@ namespace CityTransportWork
         }
         private void getDrivers()
         {
-            SqlConnection sqlConnection = new SqlConnection(connectionString);
-            sqlConnection.Open();
             try
             {
-                SqlCommand command = new SqlCommand("getFreeDrivers", sqlConnection);
-                command.CommandType = CommandType.StoredProcedure;
-
-                SqlParameter dataParam = new SqlParameter("@data", SqlDbType.DateTime);
-                dataParam.Value = dtime;
-                command.Parameters.Add(dataParam);
-                SqlParameter routeNumberParam = new SqlParameter("@routeNumber", SqlDbType.Int);
-                routeNumberParam.Value = number;
-                command.Parameters.Add(routeNumberParam);
-                SqlParameter transportTypeParam = new SqlParameter("@transportType", SqlDbType.VarChar, 10);
-                transportTypeParam.Value = transportTypeName;
-                command.Parameters.Add(transportTypeParam);
-                SqlParameter routeNameParam = new SqlParameter("@routeName", SqlDbType.VarChar, 10);
-                routeNameParam.Value = direction;
-                command.Parameters.Add(routeNameParam);
-                SqlDataReader reader = command.ExecuteReader();
-
-                while (reader.Read())
+                using (SqlConnection sqlConnection = new SqlConnection(Program.bld.ConnectionString))
                 {
-                    driver.Items.Add(reader["FIO"].ToString());
-                }
-                reader.Close();
+                    sqlConnection.Open();
 
-                sqlConnection.Close();
+                    SqlCommand command = new SqlCommand("getFreeDrivers", sqlConnection);
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    SqlParameter dataParam = new SqlParameter("@data", SqlDbType.DateTime);
+                    dataParam.Value = dtime;
+                    command.Parameters.Add(dataParam);
+                    SqlParameter routeNumberParam = new SqlParameter("@routeNumber", SqlDbType.Int);
+                    routeNumberParam.Value = number;
+                    command.Parameters.Add(routeNumberParam);
+                    SqlParameter transportTypeParam = new SqlParameter("@transportType", SqlDbType.VarChar, 10);
+                    transportTypeParam.Value = transportTypeName;
+                    command.Parameters.Add(transportTypeParam);
+                    SqlParameter routeNameParam = new SqlParameter("@routeName", SqlDbType.VarChar, 10);
+                    routeNameParam.Value = direction;
+                    command.Parameters.Add(routeNameParam);
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        driver.Items.Add(reader["FIO"].ToString());
+                    }
+                    reader.Close();
+                }
             }
             catch (Exception ex)
             {
@@ -121,33 +121,34 @@ namespace CityTransportWork
         }
         private void getCars()
         {
-            SqlConnection sqlConnection = new SqlConnection(connectionString);
             try
             {
-                sqlConnection.Open();
-                SqlCommand command = new SqlCommand("dbo.getFreeCars", sqlConnection);
-                command.CommandType = CommandType.StoredProcedure;
-
-                SqlParameter dataParam = new SqlParameter("@data", SqlDbType.DateTime);
-                dataParam.Value = dtime;
-                command.Parameters.Add(dataParam);
-                SqlParameter routeNumberParam = new SqlParameter("@routeNumber", SqlDbType.Int);
-                routeNumberParam.Value = number;
-                command.Parameters.Add(routeNumberParam);
-                SqlParameter transportTypeParam = new SqlParameter("@transportType", SqlDbType.VarChar, 10);
-                transportTypeParam.Value = transportTypeName;
-                command.Parameters.Add(transportTypeParam);
-                SqlParameter routeNameParam = new SqlParameter("@routeName", SqlDbType.VarChar, 10);
-                routeNameParam.Value = direction;
-                command.Parameters.Add(routeNameParam);
-                SqlDataReader reader = command.ExecuteReader();
-
-                while (reader.Read())
+                using (SqlConnection sqlConnection = new SqlConnection(Program.bld.ConnectionString))
                 {
-                    car.Items.Add(reader["TransportNumber"].ToString());
+                    sqlConnection.Open();
+                    SqlCommand command = new SqlCommand("dbo.getFreeCars", sqlConnection);
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    SqlParameter dataParam = new SqlParameter("@data", SqlDbType.DateTime);
+                    dataParam.Value = dtime;
+                    command.Parameters.Add(dataParam);
+                    SqlParameter routeNumberParam = new SqlParameter("@routeNumber", SqlDbType.Int);
+                    routeNumberParam.Value = number;
+                    command.Parameters.Add(routeNumberParam);
+                    SqlParameter transportTypeParam = new SqlParameter("@transportType", SqlDbType.VarChar, 10);
+                    transportTypeParam.Value = transportTypeName;
+                    command.Parameters.Add(transportTypeParam);
+                    SqlParameter routeNameParam = new SqlParameter("@routeName", SqlDbType.VarChar, 10);
+                    routeNameParam.Value = direction;
+                    command.Parameters.Add(routeNameParam);
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        car.Items.Add(reader["TransportNumber"].ToString());
+                    }
+                    reader.Close();
                 }
-                reader.Close();
-                sqlConnection.Close();
 
             }
             catch (Exception ex)
@@ -195,26 +196,26 @@ namespace CityTransportWork
         }
         private void getDirection()
         {
-            SqlConnection sqlConnection = new SqlConnection(connectionString);
-
             try
             {
-                sqlConnection.Open();
-                transportTypeName = transportType.SelectedIndex != -1 ? transportType.SelectedItem.ToString() : null;
-                SqlCommand command = new SqlCommand("dbo.[getDir]", sqlConnection);
-                command.CommandType = CommandType.StoredProcedure;
-                SqlParameter routeNumberParam = new SqlParameter("@number", SqlDbType.Int);
-                routeNumberParam.Value = number;
-                command.Parameters.Add(routeNumberParam);
-                SqlParameter typeParam = new SqlParameter("@type", SqlDbType.VarChar, 10);
-                typeParam.Value = transportTypeName;
-                command.Parameters.Add(typeParam);
-                SqlDataReader reader = command.ExecuteReader();
-                while (reader.Read())
+                using (SqlConnection sqlConnection = new SqlConnection(Program.bld.ConnectionString))
                 {
-                    dir.Items.Add(reader["RouteName"].ToString());
+                    sqlConnection.Open();
+                    transportTypeName = transportType.SelectedIndex != -1 ? transportType.SelectedItem.ToString() : null;
+                    SqlCommand command = new SqlCommand("dbo.[getDir]", sqlConnection);
+                    command.CommandType = CommandType.StoredProcedure;
+                    SqlParameter routeNumberParam = new SqlParameter("@number", SqlDbType.Int);
+                    routeNumberParam.Value = number;
+                    command.Parameters.Add(routeNumberParam);
+                    SqlParameter typeParam = new SqlParameter("@type", SqlDbType.VarChar, 10);
+                    typeParam.Value = transportTypeName;
+                    command.Parameters.Add(typeParam);
+                    SqlDataReader reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        dir.Items.Add(reader["RouteName"].ToString());
+                    }
                 }
-                sqlConnection.Close();
             }
             catch (Exception ex)
             {
@@ -227,8 +228,6 @@ namespace CityTransportWork
            getCarAndDrivers();
 
         }
-        string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["bdConnectionString"].ConnectionString;
-
         private int oldNumber;
         private string oldTransportTypeName, oldDriverName,oldCarName,oldDirection, oldDepTime;
         private void AddTrip_Load(object sender, EventArgs e)
@@ -332,70 +331,69 @@ namespace CityTransportWork
 
                 try
                 {
-                    string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["bdConnectionString"].ConnectionString;
+                 using (SqlConnection sqlConnection = new SqlConnection(Program.bld.ConnectionString))
+                    {
+                        sqlConnection.Open();
+                        SqlCommand command = new SqlCommand("getRouteInfo", sqlConnection);
+                        command.CommandType = CommandType.StoredProcedure;
+                        SqlParameter routeNumberParam = new SqlParameter("@routeNumber", SqlDbType.Int);
+                        routeNumberParam.Value = number;
+                        command.Parameters.Add(routeNumberParam);
 
-                    SqlConnection sqlConnection = new SqlConnection(connectionString);
-                    sqlConnection.Open();
-                    SqlCommand command = new SqlCommand("getRouteInfo", sqlConnection);
-                    command.CommandType = CommandType.StoredProcedure;
-                    SqlParameter routeNumberParam = new SqlParameter("@routeNumber", SqlDbType.Int);
-                    routeNumberParam.Value = number;
-                    command.Parameters.Add(routeNumberParam);
+                        SqlParameter transportTypeParam = new SqlParameter("@transportType", SqlDbType.VarChar, 10);
+                        transportTypeParam.Value = transportTypeName;
+                        command.Parameters.Add(transportTypeParam);
 
-                    SqlParameter transportTypeParam = new SqlParameter("@transportType", SqlDbType.VarChar, 10);
-                    transportTypeParam.Value = transportTypeName;
-                    command.Parameters.Add(transportTypeParam);
+                        SqlParameter routeNameParam = new SqlParameter("@routeName", SqlDbType.VarChar, 51);
+                        routeNameParam.Value = direction;
+                        command.Parameters.Add(routeNameParam);
 
-                    SqlParameter routeNameParam = new SqlParameter("@routeName", SqlDbType.VarChar, 51);
-                    routeNameParam.Value = direction;
-                    command.Parameters.Add(routeNameParam);
+                        SqlParameter driverParam = new SqlParameter("@driver", SqlDbType.VarChar, 40);
+                        driverParam.Value = driverName;
+                        command.Parameters.Add(driverParam);
 
-                    SqlParameter driverParam = new SqlParameter("@driver", SqlDbType.VarChar, 40);
-                    driverParam.Value = driverName;
-                    command.Parameters.Add(driverParam);
+                        SqlParameter carParam = new SqlParameter("@car", SqlDbType.VarChar, 6);
+                        carParam.Value = carName;
+                        command.Parameters.Add(carParam);
 
-                    SqlParameter carParam = new SqlParameter("@car", SqlDbType.VarChar, 6);
-                    carParam.Value = carName;
-                    command.Parameters.Add(carParam);
+                        SqlParameter routeIdParam = new SqlParameter("@routeid", SqlDbType.Int);
+                        routeIdParam.Direction = ParameterDirection.Output;
+                        command.Parameters.Add(routeIdParam);
 
-                    SqlParameter routeIdParam = new SqlParameter("@routeid", SqlDbType.Int);
-                    routeIdParam.Direction = ParameterDirection.Output;
-                    command.Parameters.Add(routeIdParam);
+                        SqlParameter driverIdParam = new SqlParameter("@driverid", SqlDbType.Int);
+                        driverIdParam.Direction = ParameterDirection.Output;
+                        command.Parameters.Add(driverIdParam);
 
-                    SqlParameter driverIdParam = new SqlParameter("@driverid", SqlDbType.Int);
-                    driverIdParam.Direction = ParameterDirection.Output;
-                    command.Parameters.Add(driverIdParam);
+                        SqlParameter transportIdParam = new SqlParameter("@transportid", SqlDbType.Int);
+                        transportIdParam.Direction = ParameterDirection.Output;
+                        command.Parameters.Add(transportIdParam);
 
-                    SqlParameter transportIdParam = new SqlParameter("@transportid", SqlDbType.Int);
-                    transportIdParam.Direction = ParameterDirection.Output;
-                    command.Parameters.Add(transportIdParam);
+                        command.ExecuteNonQuery();
 
-                    command.ExecuteNonQuery();
-
-                    int routeId = (int)routeIdParam.Value;
-                    int driverId = (int)driverIdParam.Value;
-                    int transportId = (int)transportIdParam.Value;
-
+                        int routeId = (int)routeIdParam.Value;
+                        int driverId = (int)driverIdParam.Value;
+                        int transportId = (int)transportIdParam.Value;
 
 
-                    SqlCommand cmd = new SqlCommand("insertTrip", sqlConnection);
 
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    SqlParameter depTimeParam = new SqlParameter("@depTime", SqlDbType.DateTime);
-                    depTimeParam.Value = dtime;
-                    cmd.Parameters.Add(depTimeParam);
-                    SqlParameter routeidParam = new SqlParameter("@routeid", SqlDbType.Int);
-                    routeidParam.Value = routeId;
-                    cmd.Parameters.Add(routeidParam);
-                    SqlParameter driveridParam = new SqlParameter("@driverid", SqlDbType.Int);
-                    driveridParam.Value = driverId;
-                    cmd.Parameters.Add(driveridParam);
-                    SqlParameter transportidParam = new SqlParameter("@carid", SqlDbType.Int);
-                    transportidParam.Value = transportId;
-                    cmd.Parameters.Add(transportidParam);
-                    cmd.ExecuteNonQuery();
-                    sqlConnection.Close();
-                    update = 4;
+                        SqlCommand cmd = new SqlCommand("insertTrip", sqlConnection);
+
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        SqlParameter depTimeParam = new SqlParameter("@depTime", SqlDbType.DateTime);
+                        depTimeParam.Value = dtime;
+                        cmd.Parameters.Add(depTimeParam);
+                        SqlParameter routeidParam = new SqlParameter("@routeid", SqlDbType.Int);
+                        routeidParam.Value = routeId;
+                        cmd.Parameters.Add(routeidParam);
+                        SqlParameter driveridParam = new SqlParameter("@driverid", SqlDbType.Int);
+                        driveridParam.Value = driverId;
+                        cmd.Parameters.Add(driveridParam);
+                        SqlParameter transportidParam = new SqlParameter("@carid", SqlDbType.Int);
+                        transportidParam.Value = transportId;
+                        cmd.Parameters.Add(transportidParam);
+                        cmd.ExecuteNonQuery();
+                        update = 4;
+                    }
                 }
 
                 catch (Exception ex)
